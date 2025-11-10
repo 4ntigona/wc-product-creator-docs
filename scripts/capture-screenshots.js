@@ -7,21 +7,29 @@
  * Uso: node scripts/capture-screenshots.js
  */
 
-const puppeteer = require('puppeteer');
-const fs = require('fs-extra');
-const path = require('path');
+import puppeteer from 'puppeteer';
+import fs from 'fs-extra';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// ESM __dirname equivalent
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ============================================================================
 // CONFIGURAÇÃO
 // ============================================================================
 
 const CONFIG = {
-  // Local WordPress environment (ajuste conforme necessário)
-  baseURL: 'http://id-blocksy.local',
+  // Production environment
+  baseURL: 'https://idbags.top',
+  
+  // Frontend password (password-protected site)
+  frontendPassword: 'idtop.bags',
   
   // WordPress admin credentials
-  username: 'admin', // ⚠️ SUBSTITUA com suas credenciais
-  password: 'password', // ⚠️ SUBSTITUA com suas credenciais
+  username: 'rivera',
+  password: 'elvira666',
   
   // Produto real: ID Bags - Base
   baseProductID: '15710',
@@ -164,13 +172,14 @@ async function setupBrowser() {
   log.info('Inicializando browser Puppeteer...');
   
   const browser = await puppeteer.launch({
-    headless: 'new', // Use 'new' headless mode (mais estável)
+    headless: 'new', // Volta para modo headless
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-dev-shm-usage',
       '--disable-gpu',
     ],
+    ignoreHTTPSErrors: false,
   });
   
   const page = await browser.newPage();
@@ -189,17 +198,78 @@ async function setupBrowser() {
 }
 
 /**
+ * Lida com password protection do WordPress (se houver)
+ */
+async function handlePasswordProtection(page) {
+  log.step('Verificando password protection...');
+  
+  try {
+    // Aguarda formulário de senha com o seletor correto
+    await page.waitForSelector('#password_protected_pass', { 
+      timeout: 3000 
+    });
+    
+    log.info('Site protegido por senha - inserindo...');
+    
+    // Preenche o campo de senha
+    await page.type('#password_protected_pass', CONFIG.frontendPassword);
+    
+    // Procura botão de submit (próximo ao campo de senha)
+    const submitBtn = await page.$('input[type="submit"]') || 
+                      await page.$('button[type="submit"]') ||
+                      await page.$('form input[value]'); // Qualquer input no form
+    
+    if (submitBtn) {
+      // Clica e aguarda a rede ficar idle (sem esperar navegação formal)
+      await Promise.all([
+        submitBtn.click(),
+        page.waitForNetworkIdle({ timeout: 10000 }).catch(() => log.warn('Network idle timeout, continuando...')),
+      ]);
+      await new Promise(r => setTimeout(r, 3000)); // Espera 3s para redirect completo
+      log.success('Password aceito');
+    } else {
+      // Se não achar botão, tenta dar Enter no campo
+      await page.keyboard.press('Enter');
+      await page.waitForNetworkIdle({ timeout: 10000 }).catch(() => {});
+      await new Promise(r => setTimeout(r, 3000));
+      log.success('Password enviado via Enter');
+    }
+  } catch (error) {
+    // Sem password protection ou já autenticado
+    log.info('Sem password protection ou já autenticado');
+  }
+}
+
+/**
  * Faz login no WordPress admin
  */
 async function loginToWordPress(page) {
   log.step('Fazendo login no WordPress...');
   
+  // Navega direto para admin (sem password protection)
   const loginURL = `${CONFIG.baseURL}/wp-admin`;
   
-  await page.goto(loginURL, {
-    waitUntil: 'networkidle2',
-    timeout: CONFIG.timeouts.navigation,
-  });
+  try {
+    await page.goto(loginURL, {
+      waitUntil: 'load',
+      timeout: CONFIG.timeouts.navigation,
+    });
+    
+    // Aguarda extra para garantir que carregou
+    await sleep(CONFIG.timeouts.wait);
+    
+  } catch (error) {
+    log.error(`Erro ao carregar página de login: ${error.message}`);
+    log.info('Tentando continuar mesmo com erro...');
+  }
+  
+  // Aguarda o formulário de login ou página admin
+  try {
+    await page.waitForSelector('#user_login, body.wp-admin', { timeout: 5000 });
+  } catch (error) {
+    log.error('Nem formulário de login nem admin page encontrados');
+    throw error;
+  }
   
   // Verifica se já está logado
   const isLoggedIn = await page.evaluate(() => {
@@ -209,6 +279,13 @@ async function loginToWordPress(page) {
   if (isLoggedIn) {
     log.info('Já está logado no WordPress');
     return;
+  }
+  
+  // Verifica se formulário de login existe
+  const hasLoginForm = await page.$('#user_login');
+  if (!hasLoginForm) {
+    log.error('Formulário de login não encontrado');
+    throw new Error('Login form not found');
   }
   
   // Preenche formulário de login
@@ -231,14 +308,29 @@ async function loginToWordPress(page) {
 async function navigateToPluginPage(page) {
   log.step('Navegando para a página do plugin...');
   
-  const pluginURL = `${CONFIG.baseURL}/wp-admin/admin.php?page=wc_product_creator`;
+  // CORRIGIDO: hífen, não underscore!
+  const pluginURL = `${CONFIG.baseURL}/wp-admin/admin.php?page=wc-product-creator`;
   
+  log.info(`URL do plugin: ${pluginURL}`);
+  
+  // Navega direto para a página do plugin
   await page.goto(pluginURL, {
     waitUntil: 'networkidle2',
     timeout: CONFIG.timeouts.navigation,
   });
   
   await sleep(CONFIG.timeouts.wait);
+  
+  // Verifica se página carregou corretamente
+  const hasPermissionError = await page.evaluate(() => {
+    const body = document.body.textContent || '';
+    return body.includes('Sem permissão') || body.includes('não tem permissão');
+  });
+  
+  if (hasPermissionError) {
+    log.error('❌ ERRO: Página mostra mensagem de permissão!');
+    throw new Error('Sem permissão para acessar a página do plugin. Verifique se o usuário tem role Administrator.');
+  }
   
   log.success('Página do plugin carregada');
 }
@@ -678,8 +770,4 @@ async function main() {
 }
 
 // Execute script
-if (require.main === module) {
-  main();
-}
-
-module.exports = { main };
+main();
