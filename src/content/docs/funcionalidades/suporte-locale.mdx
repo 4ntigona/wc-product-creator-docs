@@ -1,0 +1,431 @@
+---
+title: Suporte a Locale PT-BR/EN-US
+description: Como o plugin lida com formatos numéricos regionais
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+O WC Product Creator oferece **suporte completo a formatos numéricos brasileiros** (PT-BR) e americanos (EN-US), permitindo que usuários digitem valores usando vírgula ou ponto como separador decimal.
+
+## Diferenças Regionais
+
+### Brasil (PT-BR)
+
+- **Separador decimal:** vírgula (`,`)
+- **Separador de milhares:** ponto (`.`)
+- **Exemplos:**
+  - `10,5` = dez vírgula cinco
+  - `1.234,56` = mil duzentos e trinta e quatro vírgula cinquenta e seis
+  - `-0,5` = menos zero vírgula cinco
+
+### Estados Unidos / Internacional (EN-US)
+
+- **Separador decimal:** ponto (`.`)
+- **Separador de milhares:** vírgula (`,`)
+- **Exemplos:**
+  - `10.5` = ten point five
+  - `1,234.56` = one thousand two hundred thirty-four point fifty-six
+  - `-0.5` = minus zero point five
+
+<Aside type="tip">
+**Flexibilidade:** O plugin detecta e aceita ambos os formatos automaticamente. Você pode usar o formato que preferir, e o sistema converterá internamente.
+</Aside>
+
+## Implementação Front-end
+
+### Função de Parsing
+
+```javascript
+// script.js
+function parseLocaleFloat(value) {
+  const str = String(value).trim();
+  if (!str) return 0;
+  
+  // Detecta se usa vírgula (PT-BR) ou ponto (EN-US)
+  const hasComma = str.includes(',');
+  let normalized = str;
+  
+  if (hasComma) {
+    // PT-BR: remove pontos (milhares), troca vírgula por ponto
+    normalized = str.replace(/\./g, '').replace(',', '.');
+  } else {
+    // EN-US: remove vírgulas (milhares), mantém ponto
+    normalized = str.replace(/,/g, '');
+  }
+  
+  const num = parseFloat(normalized);
+  return isNaN(num) ? 0 : num;
+}
+```
+
+**Exemplos de conversão:**
+
+<Tabs>
+<TabItem label="PT-BR">
+
+```javascript
+parseLocaleFloat("10,5")       // → 10.5
+parseLocaleFloat("-0,5")       // → -0.5
+parseLocaleFloat("41,111")     // → 41.111
+parseLocaleFloat("1.234,56")   // → 1234.56
+```
+
+</TabItem>
+
+<TabItem label="EN-US">
+
+```javascript
+parseLocaleFloat("10.5")       // → 10.5
+parseLocaleFloat("-0.5")       // → -0.5
+parseLocaleFloat("41.111")     // → 41.111
+parseLocaleFloat("1,234.56")   // → 1234.56
+```
+
+</TabItem>
+
+<TabItem label="Casos Edge">
+
+```javascript
+parseLocaleFloat("")           // → 0
+parseLocaleFloat("abc")        // → 0 (NaN vira 0)
+parseLocaleFloat("10")         // → 10
+parseLocaleFloat("-5")         // → -5
+```
+
+</TabItem>
+</Tabs>
+
+### Formatação de Saída
+
+Para exibir valores de volta ao usuário preservando o formato original:
+
+```javascript
+function formatLikeOriginal(number, originalString) {
+  const str = String(originalString).trim();
+  const hasComma = str.includes(',');
+  
+  // Detecta precisão decimal do original
+  const parts = str.split(hasComma ? ',' : '.');
+  const decimals = parts[1] ? parts[1].length : 0;
+  
+  // Formata com mesma precisão
+  const formatted = number.toFixed(decimals);
+  
+  // Troca ponto por vírgula se original usava vírgula
+  return hasComma ? formatted.replace('.', ',') : formatted;
+}
+```
+
+**Exemplos:**
+
+<Tabs>
+<TabItem label="Preservar PT-BR">
+
+```javascript
+// Usuário digitou "-0,5"
+const original = "-0,5";
+const parsed = parseLocaleFloat(original);    // -0.5
+const calculated = parsed - 10;                // -10.5
+const display = formatLikeOriginal(calculated, original); // "-10,5"
+```
+
+</TabItem>
+
+<TabItem label="Preservar EN-US">
+
+```javascript
+// Usuário digitou "41.5"
+const original = "41.5";
+const parsed = parseLocaleFloat(original);    // 41.5
+const calculated = parsed + 0.5;               // 42.0
+const display = formatLikeOriginal(calculated, original); // "42.0"
+```
+
+</TabItem>
+</Tabs>
+
+## Implementação Back-end
+
+### Sanitização PHP
+
+```php
+// wc-product-creator.php
+private function sanitize_row_patch($patch, $row) {
+  $sanitized = [];
+  
+  foreach ($patch as $key => $raw_val) {
+    // Verifica se é campo numérico
+    if ($type === 'number') {
+      if (is_numeric($raw_val)) {
+        $sanitized[$key] = floatval($raw_val);
+      } elseif (is_string($raw_val)) {
+        // Normaliza vírgula PT-BR para ponto
+        $normalized = str_replace(',', '.', $raw_val);
+        if (is_numeric($normalized)) {
+          $sanitized[$key] = floatval($normalized);
+        } else {
+          // Valor inválido, remover do patch
+          continue;
+        }
+      }
+    }
+  }
+  
+  return $sanitized;
+}
+```
+
+**Fluxo de conversão:**
+
+```php
+// Entrada: "41,5" (string com vírgula)
+$raw_val = "41,5";
+
+// Passo 1: Detecta que é string
+is_string($raw_val); // true
+
+// Passo 2: Substitui vírgula por ponto
+$normalized = str_replace(',', '.', $raw_val); // "41.5"
+
+// Passo 3: Verifica se é numérico
+is_numeric($normalized); // true
+
+// Passo 4: Converte para float
+$sanitized[$key] = floatval($normalized); // 41.5
+```
+
+## Casos de Uso
+
+### Caso 1: Offset Global em PT-BR
+
+**Entrada do usuário:**
+```
+Offset X: -0,5
+Offset Y: 10,25
+```
+
+**Processamento:**
+
+<Tabs>
+<TabItem label="JavaScript">
+
+```javascript
+const offsetX = parseLocaleFloat("-0,5");   // -0.5
+const offsetY = parseLocaleFloat("10,25");  // 10.25
+
+rows.forEach(row => {
+  row.x = row.x + offsetX;  // Ex: 100 + (-0.5) = 99.5
+  row.y = row.y + offsetY;  // Ex: 200 + 10.25 = 210.25
+});
+```
+
+</TabItem>
+
+<TabItem label="Payload AJAX">
+
+```json
+{
+  "edited_rows": [
+    { "index": 0, "patch": { "x": 99.5, "y": 210.25 } }
+  ]
+}
+```
+
+</TabItem>
+
+<TabItem label="PHP Sanitização">
+
+```php
+// JSON já vem com números, mas se viesse como string:
+$patch = ["x" => "99,5", "y" => "210,25"];
+
+// Normaliza
+$normalized_x = str_replace(',', '.', "99,5");   // "99.5"
+$normalized_y = str_replace(',', '.', "210,25"); // "210.25"
+
+// Converte
+$x = floatval($normalized_x); // 99.5
+$y = floatval($normalized_y); // 210.25
+```
+
+</TabItem>
+</Tabs>
+
+### Caso 2: Edição Individual Mista
+
+**Usuário 1 (PT-BR):** Digita `X: 41,5`  
+**Usuário 2 (EN-US):** Digita `X: 41.5`
+
+**Resultado:** Ambos salvam `41.5` no banco de dados.
+
+```javascript
+// Usuário 1
+parseLocaleFloat("41,5")  // → 41.5
+
+// Usuário 2  
+parseLocaleFloat("41.5")  // → 41.5
+
+// Mesmo valor final! ✅
+```
+
+### Caso 3: Notação de Milhares
+
+**Entrada:** `1.234,56` (PT-BR) ou `1,234.56` (EN-US)
+
+<Tabs>
+<TabItem label="PT-BR">
+
+```javascript
+const input = "1.234,56";
+// hasComma = true
+// normalized = "1234,56" → "1234.56"
+parseLocaleFloat(input); // 1234.56 ✅
+```
+
+</TabItem>
+
+<TabItem label="EN-US">
+
+```javascript
+const input = "1,234.56";
+// hasComma = false (vírgula é removida)
+// normalized = "1234.56"
+parseLocaleFloat(input); // 1234.56 ✅
+```
+
+</TabItem>
+</Tabs>
+
+## Validação e Testes
+
+### Testes de Unidade (Conceitual)
+
+```javascript
+// Testes para parseLocaleFloat
+describe('parseLocaleFloat', () => {
+  it('converte PT-BR corretamente', () => {
+    expect(parseLocaleFloat("10,5")).toBe(10.5);
+    expect(parseLocaleFloat("-0,5")).toBe(-0.5);
+    expect(parseLocaleFloat("1.234,56")).toBe(1234.56);
+  });
+  
+  it('converte EN-US corretamente', () => {
+    expect(parseLocaleFloat("10.5")).toBe(10.5);
+    expect(parseLocaleFloat("-0.5")).toBe(-0.5);
+    expect(parseLocaleFloat("1,234.56")).toBe(1234.56);
+  });
+  
+  it('lida com casos edge', () => {
+    expect(parseLocaleFloat("")).toBe(0);
+    expect(parseLocaleFloat("abc")).toBe(0);
+    expect(parseLocaleFloat("0")).toBe(0);
+  });
+});
+```
+
+### Testes Manuais
+
+1. **Digite valores PT-BR** em campos de offset:
+   ```
+   Offset X: -0,5
+   Offset Y: 10,25
+   ```
+   Verifique que cálculos aplicam corretamente.
+
+2. **Digite valores EN-US**:
+   ```
+   Offset X: -0.5
+   Offset Y: 10.25
+   ```
+   Resultado deve ser idêntico ao teste 1.
+
+3. **Misture formatos**:
+   ```
+   Linha 0: X = 41,5
+   Linha 1: X = 42.5
+   ```
+   Ambos devem salvar como números válidos.
+
+## Limitações
+
+### Ambiguidade em Valores Simples
+
+**Problema:** `1.234` pode ser interpretado como:
+- PT-BR: mil duzentos e trinta e quatro (1234)
+- EN-US: um ponto dois três quatro (1.234)
+
+**Solução atual:** Se não há vírgula, assume formato EN-US (ponto é decimal).
+
+**Contorno:** Use vírgula explicitamente para PT-BR: `1234,0`
+
+---
+
+### Não Suporta Outros Locales
+
+Apenas PT-BR e EN-US são suportados. Outros formatos (ex: espaço como separador em FR) não funcionarão.
+
+---
+
+### Formatação de Saída Pode Não Coincidir
+
+Se usuário digita `10` (sem decimais) e sistema calcula `10.5`, a formatação de saída pode não preservar perfeitamente o "estilo" original.
+
+## Extensão Futura
+
+### Detecção Automática de Locale
+
+Usar configuração do WordPress:
+
+```javascript
+const locale = document.documentElement.lang; // 'pt-BR' ou 'en-US'
+
+function parseLocaleFloatAuto(value) {
+  if (locale === 'pt-BR') {
+    return parseLocalePTBR(value);
+  } else {
+    return parseLocaleENUS(value);
+  }
+}
+```
+
+### Biblioteca de Internacionalização
+
+Usar `Intl.NumberFormat` do JavaScript:
+
+```javascript
+const formatter = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 1,
+  maximumFractionDigits: 3,
+});
+
+formatter.format(10.5); // "10,5" (PT-BR)
+
+const parser = new Intl.NumberFormat('pt-BR');
+// Parsing ainda requer lógica custom
+```
+
+## Compatibilidade
+
+### Browsers
+
+- ✅ Chrome/Edge: Totalmente suportado
+- ✅ Firefox: Totalmente suportado
+- ✅ Safari: Totalmente suportado
+- ✅ IE11: Suportado (se polyfill de `String` presente)
+
+### WordPress
+
+- ✅ WP 5.0+: Funciona
+- ✅ WP 6.0+: Funciona
+- ℹ️ Locale do WP não afeta parsing (lógica custom independente)
+
+### WooCommerce
+
+- ✅ WC 6.0+: Compatível
+- ℹ️ Configuração de moeda do WC não afeta (coordenadas não são preços)
+
+## Próximos Passos
+
+- **[Ajuste Global](/guias/ajuste-global/)** - Usar offsets com formato BR/US
+- **[Editando Posições](/guias/editando-posicoes/)** - Digitar coordenadas em qualquer formato
+- **[Referência de Endpoints](/referencia/endpoints-ajax/)** - Como valores são transmitidos

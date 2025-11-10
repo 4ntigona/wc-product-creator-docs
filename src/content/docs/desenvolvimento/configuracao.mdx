@@ -1,0 +1,484 @@
+---
+title: Configuração de Desenvolvimento
+description: Como preparar o ambiente para contribuir com o projeto
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Este guia explica como configurar um ambiente de desenvolvimento local para trabalhar no WC Product Creator.
+
+## Pré-requisitos
+
+### Software Necessário
+
+- **PHP:** 7.4 ou superior
+- **WordPress:** 5.0 ou superior
+- **WooCommerce:** 6.0 ou superior
+- **Composer:** (opcional, para dependências de dev)
+- **Node.js:** (opcional, para theme child assets)
+- **Git:** Para controle de versão
+
+### Ambiente Local
+
+Recomendamos uma das seguintes opções:
+
+<Tabs>
+<TabItem label="Local by Flywheel">
+
+**Vantagens:**
+- Interface gráfica amigável
+- Múltiplos sites
+- SSL automático
+
+**Setup:**
+1. Baixar em [localwp.com](https://localwp.com)
+2. Criar novo site WordPress
+3. Instalar WooCommerce
+
+</TabItem>
+
+<TabItem label="Docker (via wp-env)">
+
+**Vantagens:**
+- Ambientes isolados
+- Reprodutível
+- CI/CD friendly
+
+**Setup:**
+```bash
+npm -g i @wordpress/env
+wp-env start
+wp-env run cli wp plugin install woocommerce --activate
+```
+
+</TabItem>
+
+<TabItem label="XAMPP/MAMP">
+
+**Vantagens:**
+- Controle total
+- Leve
+
+**Setup:**
+1. Instalar XAMPP/MAMP
+2. Download WordPress
+3. Configurar MySQL
+4. Instalar WooCommerce
+
+</TabItem>
+</Tabs>
+
+## Instalação do Plugin
+
+<Steps>
+
+1. **Clone o repositório**
+
+   ```bash
+   cd wp-content/mu-plugins/
+   git clone https://github.com/4ntigona/wc-product-creator.git
+   ```
+
+2. **Verifique a estrutura**
+
+   ```
+   wp-content/mu-plugins/wc-product-creator/
+   ├── wc-product-creator.php
+   ├── script.js
+   ├── style.css
+   ├── _documentation/
+   └── scripts/
+   ```
+
+3. **Crie loader (se necessário)**
+
+   Se seu ambiente não auto-carrega subpastas em `mu-plugins`, crie:
+
+   **Arquivo:** `wp-content/mu-plugins/wc-product-creator-loader.php`
+   ```php
+   <?php
+   /**
+    * Plugin Name: WC Product Creator Loader
+    * Description: Carrega o WC Product Creator da subpasta
+    */
+   require_once __DIR__ . '/wc-product-creator/wc-product-creator.php';
+   ```
+
+4. **Verifique instalação**
+
+   - Acesse admin WordPress
+   - Vá em **Plugins → Plugins Instalados**
+   - Procure por "WC Product Creator" (deve estar ativo automaticamente)
+   - Menu **WooCommerce → Criador de Produtos** deve aparecer
+
+</Steps>
+
+<Aside type="tip">
+**MU Plugins vs Plugins regulares:** MU (Must-Use) plugins são ativados automaticamente e não podem ser desativados via interface. Ideal para ferramentas admin críticas.
+</Aside>
+
+## Configuração de Ferramentas
+
+### WordPress Coding Standards (WPCS)
+
+<Steps>
+
+1. **Instalar dependências globais**
+
+   ```bash
+   composer global require "squizlabs/php_codesniffer=*"
+   composer global require "wp-coding-standards/wpcs=*"
+   ```
+
+2. **Configurar PHPCS**
+
+   ```bash
+   phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
+   ```
+
+3. **Verificar instalação**
+
+   ```bash
+   phpcs -i
+   # Deve listar: WordPress, WordPress-Core, WordPress-Docs, etc.
+   ```
+
+4. **Executar check**
+
+   ```bash
+   cd wp-content/mu-plugins/wc-product-creator/
+   bash scripts/check-wpcs.sh
+   ```
+
+</Steps>
+
+**Output esperado:**
+```
+Checking PHP files for WordPress Coding Standards...
+....................................... 39 / 39 (100%)
+
+Time: 1.5s; Memory: 10MB
+```
+
+---
+
+### Editor / IDE
+
+#### VS Code (Recomendado)
+
+**Extensões úteis:**
+- **PHP Intelephense** (bmewburn.vscode-intelephense-client)
+- **WordPress Snippets** (wordpresstoolbox.wordpress-toolbox)
+- **ESLint** (dbaeumer.vscode-eslint)
+- **Prettier** (esbenp.prettier-vscode)
+
+**Configuração (`.vscode/settings.json`):**
+```json
+{
+  "phpcs.enable": true,
+  "phpcs.standard": "WordPress",
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "*.php": "php"
+  }
+}
+```
+
+---
+
+#### PhpStorm
+
+**Configuração WPCS:**
+1. **Settings → PHP → Quality Tools → PHP_CodeSniffer**
+2. Definir caminho para `phpcs` executável
+3. **Settings → Editor → Inspections**
+4. Ativar "PHP → Quality tools → PHP_CodeSniffer validation"
+5. Selecionar standard: "WordPress"
+
+## Estrutura de Desenvolvimento
+
+### Branches
+
+- **`main`:** Código estável, pronto para produção
+- **`develop`:** Integração de features
+- **`feature/*`:** Branches de funcionalidades individuais
+
+**Workflow:**
+```bash
+# Criar feature branch
+git checkout -b feature/minha-funcionalidade
+
+# Desenvolver e commitar
+git add .
+git commit -m "feat: adiciona nova funcionalidade"
+
+# Atualizar com main
+git checkout main
+git pull origin main
+git checkout feature/minha-funcionalidade
+git rebase main
+
+# Merge via PR no GitHub
+```
+
+---
+
+### Convenção de Commits
+
+Usamos [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<tipo>(<escopo>): <descrição curta>
+
+<descrição longa opcional>
+
+<rodapé opcional>
+```
+
+**Tipos:**
+- `feat`: Nova funcionalidade
+- `fix`: Correção de bug
+- `docs`: Documentação
+- `style`: Formatação (sem mudança de lógica)
+- `refactor`: Refatoração de código
+- `test`: Adicionar/atualizar testes
+- `chore`: Manutenção (dependências, scripts)
+
+**Exemplos:**
+```bash
+git commit -m "feat(ajax): adiciona endpoint de preview"
+git commit -m "fix(sanitize): corrige parsing de vírgula PT-BR"
+git commit -m "docs(readme): atualiza instruções de instalação"
+```
+
+## Debugging
+
+### Ativar WP_DEBUG
+
+**Arquivo:** `wp-config.php`
+```php
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', false);
+define('SCRIPT_DEBUG', true);
+```
+
+**Logs:** `wp-content/debug.log`
+
+---
+
+### Debug de AJAX
+
+**No JavaScript:**
+```javascript
+console.log('Enviando payload:', data);
+
+jQuery.post(ajaxurl, data, function(response) {
+  console.log('Resposta:', response);
+});
+```
+
+**No PHP:**
+```php
+error_log('DEBUG: ' . print_r($data, true));
+```
+
+---
+
+### Ferramentas do Navegador
+
+**Chrome DevTools:**
+1. **Network tab:** Ver requests AJAX
+2. **Console tab:** Erros JS e logs
+3. **Elements tab:** Inspecionar DOM gerado
+
+**Filtrar por AJAX:**
+- Network → Filter: `XHR`
+- Procurar por `admin-ajax.php`
+
+## Testes
+
+### Teste Manual Checklist
+
+Antes de fazer PR, verifique:
+
+- [ ] **WPCS passa** sem erros
+- [ ] **Criar produto** funciona
+- [ ] **Atualizar produtos** funciona
+- [ ] **Preview** gera corretamente
+- [ ] **Offset global** aplica em PT-BR e EN-US
+- [ ] **Edições individuais** salvam
+- [ ] **Backups** são criados (modo update)
+- [ ] **Nenhum erro** no console JS
+- [ ] **Nenhum erro** no `debug.log`
+
+---
+
+### Testes de Integração
+
+**Cenários críticos:**
+
+1. **Produto base sem thumbnail**
+   - Deve: Criar produto mas avisar sobre imagem faltando
+
+2. **Produto com 100+ linhas**
+   - Deve: UI renderizar sem travar
+
+3. **Atualizar 20+ produtos**
+   - Deve: Processar todos e retornar contagem
+
+4. **Edições com valores extremos**
+   - `X: -1000`, `Y: 10000`
+   - Deve: Aceitar sem erro
+
+5. **Nonce expirado**
+   - Abrir página, esperar 24h, tentar criar
+   - Deve: Retornar erro 403
+
+## Contribuindo
+
+### Fluxo de Contribuição
+
+<Steps>
+
+1. **Fork o repositório**
+
+   No GitHub: `https://github.com/4ntigona/wc-product-creator` → Fork
+
+2. **Clone seu fork**
+
+   ```bash
+   git clone https://github.com/SEU_USER/wc-product-creator.git
+   cd wc-product-creator
+   git remote add upstream https://github.com/4ntigona/wc-product-creator.git
+   ```
+
+3. **Crie feature branch**
+
+   ```bash
+   git checkout -b feature/minha-contribuicao
+   ```
+
+4. **Desenvolva e teste**
+
+   - Escreva código
+   - Teste manualmente
+   - Execute WPCS
+   - Commit com mensagem descritiva
+
+5. **Push e abra PR**
+
+   ```bash
+   git push origin feature/minha-contribuicao
+   ```
+
+   No GitHub: Compare & pull request
+
+6. **Review e merge**
+
+   - Mantenedores revisam
+   - Responda comentários
+   - Após aprovação, será mergeado
+
+</Steps>
+
+---
+
+### Diretrizes de PR
+
+**Título:** Use formato Conventional Commits
+
+**Descrição deve incluir:**
+- **O quê:** Resumo das mudanças
+- **Por quê:** Motivação (problema resolvido, feature solicitada)
+- **Como testar:** Passos para reproduzir/verificar
+- **Checklist:**
+  - [ ] WPCS passou
+  - [ ] Testado manualmente
+  - [ ] Documentação atualizada (se aplicável)
+
+**Exemplo:**
+```markdown
+## feat(preview): adiciona botão de refresh
+
+### Motivação
+Usuários precisam re-gerar preview após ajustes sem recarregar página.
+
+### Mudanças
+- Adiciona botão "🔄 Atualizar Preview"
+- Chama endpoint novamente com estado atual
+- Mantém scroll position
+
+### Como Testar
+1. Carregue conteúdo de um produto
+2. Gere preview
+3. Ajuste posição de uma linha
+4. Clique "🔄 Atualizar Preview"
+5. Verifique que mudança aparece
+
+### Checklist
+- [x] WPCS passou
+- [x] Testado no Chrome e Firefox
+- [x] Documentação atualizada em `docs/funcionalidades/sistema-preview.mdx`
+```
+
+## Troubleshooting de Desenvolvimento
+
+### Problema: PHPCS não encontra WordPress standards
+
+**Solução:**
+```bash
+composer global show
+# Procurar por wp-coding-standards/wpcs
+
+# Se não aparecer:
+composer global require "wp-coding-standards/wpcs=*"
+phpcs --config-set installed_paths ~/.composer/vendor/wp-coding-standards/wpcs
+```
+
+---
+
+### Problema: Plugin não aparece no admin
+
+**Causas:**
+1. Subpasta não auto-carregada
+2. Erro fatal no PHP
+
+**Soluções:**
+1. Criar loader (ver passo 3 da instalação)
+2. Verificar `debug.log`
+
+---
+
+### Problema: AJAX retorna 0
+
+**Causa:** Hook não registrado ou nonce inválido
+
+**Debug:**
+```php
+// Em wc-product-creator.php
+public function __construct() {
+  error_log('WC Product Creator carregado');
+  add_action('wp_ajax_wc_apply_customization', [$this, 'ajax_apply_customization']);
+}
+
+public function ajax_apply_customization() {
+  error_log('AJAX endpoint chamado');
+  // ... resto do código
+}
+```
+
+Verifique `debug.log` para confirmar que hooks estão sendo chamados.
+
+## Recursos Adicionais
+
+- **[WordPress Plugin Developer Handbook](https://developer.wordpress.org/plugins/)**
+- **[WooCommerce Developer Docs](https://woocommerce.com/documentation/plugins/woocommerce/)**
+- **[PHP_CodeSniffer Wiki](https://github.com/squizlabs/PHP_CodeSniffer/wiki)**
+- **[Conventional Commits Spec](https://www.conventionalcommits.org/)**
+
+## Próximos Passos
+
+- **[Arquitetura](/arquitetura/visao-geral/)** - Entenda como o sistema funciona
+- **[Referência de Endpoints](/referencia/endpoints-ajax/)** - API detalhada
+- **[Solução de Problemas](/solucao-problemas/erros-comuns/)** - Problemas conhecidos

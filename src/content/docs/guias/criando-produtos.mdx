@@ -1,0 +1,237 @@
+---
+title: Criando Produtos
+description: Guia completo para criar novos produtos usando WC Product Creator
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Este guia mostra como criar novos produtos WooCommerce copiando customizações de um produto base.
+
+## Visão Geral
+
+O modo **Criar** permite duplicar as configurações de personalização de um produto existente para um novo produto. É ideal para:
+
+- Criar variações de produtos com layout similar
+- Replicar configurações complexas de campos personalizados
+- Manter consistência visual entre produtos relacionados
+
+<Aside type="tip">
+O produto base serve como "template" - suas configurações de campos e layout são copiadas, mas você pode ajustar posições antes de aplicar.
+</Aside>
+
+## Processo de Criação
+
+<Steps>
+
+1. **Acesse a página do plugin**
+   
+   No painel WordPress, vá em **WooCommerce → Criador de Produtos**.
+
+2. **Selecione o modo Criar**
+   
+   Certifique-se que o botão superior está em modo **"Criar"** (não "Atualizar").
+
+3. **Escolha o produto base**
+   
+   Selecione o produto que servirá como template na lista dropdown "Produto base".
+
+4. **Carregue o conteúdo**
+   
+   Clique em **"Carregar conteúdo do produto base"** para visualizar os campos e linhas disponíveis.
+
+5. **Defina o nome do novo produto**
+   
+   No campo "Nome do novo produto", digite o título que aparecerá na loja.
+
+6. **Selecione a imagem destacada**
+   
+   Escolha a thumbnail que representará o produto na listagem da loja.
+   
+   <Aside type="caution">
+   A imagem selecionada substituirá automaticamente as referências à imagem do produto base nas configurações de layout.
+   </Aside>
+
+7. **Filtre os campos (opcional)**
+   
+   Use a busca e checkboxes para selecionar apenas os campos que deseja copiar:
+   
+   - **Campos do grupo**: campos de formulário de personalização
+   - **Linhas de layout**: elementos visuais posicionados na prévia
+
+8. **Edite posições (opcional)**
+   
+   Expanda qualquer linha para ajustar suas coordenadas X e Y:
+   
+   ```
+   X (horizontal): 100  →  150  (+50 pixels à direita)
+   Y (vertical):   200  →  180  (-20 pixels acima)
+   ```
+   
+   <Aside>
+   Apenas as posições podem ser editadas. Tamanho, cor, rotação e outros estilos são herdados do produto base.
+   </Aside>
+
+9. **Aplique ajuste global (opcional)**
+   
+   Use o painel de **Ajuste Global de Posição** para mover todas as linhas simultaneamente:
+   
+   - **Offset X**: desloca horizontalmente (ex: `-10` move 10px à esquerda)
+   - **Offset Y**: desloca verticalmente (ex: `5` move 5px para baixo)
+   
+   Aceita formato PT-BR com vírgula: `-0,5` ou `41,111`
+
+10. **Crie o produto**
+    
+    Clique em **"Criar Produto"**. O plugin irá:
+    
+    - Criar um novo produto rascunho
+    - Copiar campos selecionados (`_wapf_fieldgroup`)
+    - Copiar linhas selecionadas (`_wapflcp_rows`) com ajustes aplicados
+    - Substituir referências de imagem
+    - Redirecionar para edição do novo produto
+
+</Steps>
+
+## Exemplo Prático
+
+### Cenário: Criar "Camiseta Vermelha" a partir de "Camiseta Azul"
+
+<Tabs>
+<TabItem label="Configuração">
+
+**Produto Base:** ID 123 - Camiseta Azul  
+**Nova Imagem:** `camiseta-vermelha.jpg` (ID 456)  
+**Nome:** "Camiseta Vermelha Premium"
+
+**Campos a copiar:**
+- ✅ Campo: Nome personalizado
+- ✅ Campo: Tamanho
+- ✅ Campo: Upload de design
+- ❌ Campo: Cor (não copiar, pois será diferente)
+
+**Linhas a copiar:**
+- ✅ Linha 0: Nome centralizado (ajustar Y: 200 → 180)
+- ✅ Linha 1: Design do usuário (manter posição)
+- ✅ Linha 2: Logo da marca (offset global: X -5, Y +3)
+
+</TabItem>
+
+<TabItem label="Resultado">
+
+**Novo Produto criado:**
+- ID: 789
+- Status: Rascunho
+- Meta copiada:
+  - `_wapf_fieldgroup` com ID ajustado para `p_789`
+  - `_wapflcp_rows` com posições ajustadas
+  - Imagem 123 substituída por 456 em todas as referências
+
+**Edições aplicadas:**
+- Linha 0: `y: 180` (antes era 200)
+- Linha 2: `x: 95` (era 100, -5 do offset)
+- Linha 2: `y: 203` (era 200, +3 do offset)
+
+</TabItem>
+
+<TabItem label="Payload AJAX">
+
+```json
+{
+  "action": "wc_apply_customization",
+  "nonce": "abc123...",
+  "mode": "create",
+  "base_product_id": "123",
+  "new_product_name": "Camiseta Vermelha Premium",
+  "thumbnail_id": "456",
+  "keys_to_copy": ["_wapf_fieldgroup", "_wapflcp_rows"],
+  "fieldgroup_subset": ["field_nome", "field_tamanho", "field_upload"],
+  "rows_subset": [0, 1, 2],
+  "edited_rows": [
+    {
+      "index": 0,
+      "patch": { "y": 180 }
+    }
+  ]
+}
+```
+
+**Resposta:**
+```json
+{
+  "success": true,
+  "data": {
+    "created_product_id": 789,
+    "edit_url": "/wp-admin/post.php?post=789&action=edit"
+  }
+}
+```
+
+</TabItem>
+</Tabs>
+
+## Metadados Copiados
+
+O plugin copia seletivamente os seguintes metadados:
+
+| Meta Key | Descrição | Transformação |
+|----------|-----------|---------------|
+| `_wapf_fieldgroup` | Configuração de campos personalizados | ID do grupo ajustado para `p_{novo_id}` |
+| `_wapflcp_rows` | Layout das linhas de prévia | Substituição de imagens + ajustes de posição |
+
+<Aside type="note">
+**Outros metadados** (preço, estoque, categorias, etc.) **não são copiados**. Você deve configurá-los manualmente após criar o produto.
+</Aside>
+
+## Validações e Segurança
+
+O plugin realiza as seguintes validações:
+
+- ✅ **Nonce**: verifica token de segurança `wc_apply_customization`
+- ✅ **Capability**: requer permissão `manage_options`
+- ✅ **Produto base**: valida que existe e é publicado
+- ✅ **Imagem**: confirma que thumbnail existe na biblioteca
+- ✅ **Meta keys**: apenas `_wapf_fieldgroup` e `_wapflcp_rows` permitidos
+- ✅ **Patches**: sanitiza edições, remove campos não-posicionais
+
+<Aside type="caution">
+Tentativas de copiar outros meta keys ou editar campos bloqueados (cor, tamanho, rotação) serão silenciosamente ignoradas.
+</Aside>
+
+## Troubleshooting
+
+### Problema: "Erro ao criar produto"
+
+**Causas comuns:**
+- Nonce expirado (sessão antiga)
+- Permissões insuficientes
+- Produto base não existe
+
+**Solução:** Recarregue a página e tente novamente.
+
+---
+
+### Problema: Imagens não aparecem no novo produto
+
+**Causa:** A substituição de imagem só funciona se:
+1. O produto base usa sua própria thumbnail nas configurações
+2. OU há apenas 1 attachment referenciado nas linhas
+
+**Solução:** Verifique as configurações de imagem do produto base antes de copiar.
+
+---
+
+### Problema: Posições ficaram erradas
+
+**Causa:** Edições com formato inválido (ex: texto em vez de número)
+
+**Solução:** 
+- Use apenas números
+- Para decimais, use vírgula (`,`) ou ponto (`.`)
+- Evite espaços ou caracteres especiais
+
+## Próximos Passos
+
+- **[Editando Posições](/guias/editando-posicoes/)** - Ajustes finos de coordenadas
+- **[Ajuste Global](/guias/ajuste-global/)** - Mover múltiplas linhas de uma vez
+- **[Atualizar Produtos](/guias/atualizando-produtos/)** - Aplicar mudanças em produtos existentes
+- **[Referência de Endpoints](/referencia/endpoints-ajax/)** - Detalhes técnicos da API

@@ -1,0 +1,517 @@
+---
+title: Endpoints AJAX
+description: Referência completa de todos os endpoints AJAX disponíveis
+---
+
+import { Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Esta página documenta todos os endpoints AJAX do WC Product Creator, incluindo parâmetros, respostas e exemplos de uso.
+
+## Visão Geral
+
+Todos os endpoints seguem o padrão WordPress AJAX:
+
+- **URL**: `admin-ajax.php`
+- **Método**: `POST`
+- **Autenticação**: Nonce + Capability
+- **Resposta**: JSON
+
+## 1. wc_create_product (Legacy)
+
+Endpoint legado mantido para retrocompatibilidade. Cria um produto simples copiando metadados via substituição de strings.
+
+### Parâmetros
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `action` | string | ✅ | `wc_create_product` |
+| `nonce` | string | ✅ | Nonce com ação `wc_create_product` |
+| `base_product` | int | ✅ | ID do produto base |
+| `new_product_name` | string | ✅ | Nome do novo produto |
+| `thumbnail_id` | int | ✅ | ID da imagem destacada |
+
+### Capability Requerida
+
+Validação via nonce (sem capability explícita).
+
+### Resposta
+
+<Tabs>
+  <TabItem label="Sucesso">
+```json
+{
+  "success": true,
+  "data": {
+    "edit_url": "https://example.com/wp-admin/post.php?post=123&action=edit"
+  }
+}
+```
+  </TabItem>
+  
+  <TabItem label="Erro">
+```json
+{
+  "success": false,
+  "data": {
+    "message": "Dados incompletos."
+  }
+}
+```
+  </TabItem>
+</Tabs>
+
+### Funcionamento Interno
+
+1. Cria produto draft com nome e imagem
+2. Busca metas `_wapf_fieldgroup` e `_wapflcp_rows` do produto base
+3. Substitui IDs via `str_replace()`:
+   - `base_product_id` → `new_product_id`
+   - `base_image_id` → `thumbnail_id`
+4. Insere metas no novo produto
+5. Retorna link de edição
+
+<Aside type="caution">
+Este endpoint usa substituição textual simples. Para controle granular, use `wc_apply_customization`.
+</Aside>
+
+### Exemplo de Uso
+
+```javascript
+jQuery.ajax({
+  url: WPCreatorAjax.ajax_url,
+  method: 'POST',
+  data: {
+    action: 'wc_create_product',
+    nonce: WPCreatorAjax.nonce,
+    base_product: 45,
+    new_product_name: 'Camiseta Verde',
+    thumbnail_id: 123
+  },
+  success: function(response) {
+    if (response.success) {
+      window.location.href = response.data.edit_url;
+    }
+  }
+});
+```
+
+---
+
+## 2. wc_fetch_fieldgroup_fields
+
+Busca campos e linhas do produto base para renderização na UI.
+
+### Parâmetros
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `action` | string | ✅ | `wc_fetch_fieldgroup_fields` |
+| `nonce` | string | ✅ | Nonce com ação `wc_fetch_fieldgroup_fields` |
+| `base_product_id` | int | ✅ | ID do produto base |
+
+### Capability Requerida
+
+`manage_options`
+
+### Resposta
+
+```json
+{
+  "success": true,
+  "data": {
+    "fields": [
+      { "id": "field_123", "label": "Nome do Cliente" },
+      { "id": "field_456", "label": "Número da Camisa" }
+    ],
+    "rows_fields": [
+      { "index": 0, "label": "Nome do Cliente" },
+      { "index": 1, "label": "Logo da Empresa" }
+    ],
+    "rows_detail": [
+      {
+        "index": 0,
+        "label": "Nome do Cliente",
+        "data": {
+          "x": 41.111,
+          "y": 52.431,
+          "w": 20,
+          "h": 5,
+          "fontSize": 16,
+          "align": "center",
+          "color": { "rules": [...] }
+        },
+        "schema": [
+          { "key": "x", "type": "number", "label": "X", "step": 0.5 },
+          { "key": "y", "type": "number", "label": "Y", "step": 0.5 }
+        ]
+      }
+    ],
+    "color_status": {
+      "0": { "has_color": true, "rules_count": 3 },
+      "1": { "has_color": false, "rules_count": 0 }
+    }
+  }
+}
+```
+
+### Campos Retornados
+
+#### `fields`
+Lista simples de campos do `_wapf_fieldgroup` para seleção.
+
+#### `rows_fields`
+Lista simplificada de linhas para overview.
+
+#### `rows_detail`
+Dados completos de cada linha incluindo:
+- `data`: Valores atuais (X, Y, tamanho, cores, etc.)
+- `schema`: Estrutura inferida para editor (tipos, limites, etc.)
+
+#### `color_status`
+Mapa indicando quais linhas têm configuração de cores do produto-origem (badge visual).
+
+### Exemplo de Uso
+
+```javascript
+jQuery.ajax({
+  url: WPCreatorAjax.ajax_url,
+  method: 'POST',
+  data: {
+    action: 'wc_fetch_fieldgroup_fields',
+    nonce: WPCreatorAjax.nonce_fetch,
+    base_product_id: 45
+  },
+  success: function(response) {
+    if (response.success) {
+      state.fields = response.data.fields;
+      state.rowsDetail = response.data.rows_detail;
+      state.colorStatus = response.data.color_status;
+      renderGrid('fieldgroup', '');
+      renderGrid('rows', '');
+    }
+  }
+});
+```
+
+---
+
+## 3. wc_apply_customization
+
+Endpoint principal para criar ou atualizar produtos com controle granular.
+
+### Parâmetros Comuns
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `action` | string | ✅ | `wc_apply_customization` |
+| `nonce` | string | ✅ | Nonce com ação `wc_apply_customization` |
+| `mode` | string | ✅ | `create` ou `update` |
+| `base_product_id` | int | ✅ | ID do produto base |
+| `keys_to_copy[]` | array | ✅ | Array de meta keys permitidas |
+| `fieldgroup_subset[]` | array | ⚠️ | IDs de campos a copiar (opcional) |
+| `rows_subset[]` | array | ⚠️ | Índices de linhas a copiar (opcional) |
+| `edited_rows` | array | ⚠️ | Patches de edição (opcional) |
+
+#### `keys_to_copy[]`
+
+Whitelist de meta keys permitidas:
+- `_wapf_fieldgroup`
+- `_wapflcp_rows`
+
+Envie como array: `keys_to_copy[]=_wapf_fieldgroup&keys_to_copy[]=_wapflcp_rows`
+
+#### `edited_rows`
+
+Array de objetos com patches de posição:
+
+```javascript
+[
+  {
+    "index": 0,
+    "patch": {
+      "x": 42.5,
+      "y": 53.0
+    }
+  },
+  {
+    "index": 2,
+    "patch": {
+      "left": 10.25,
+      "top": 20.75
+    }
+  }
+]
+```
+
+<Aside type="note">
+Apenas chaves de **posição** (`x`, `left`, `y`, `top`) são aceitas. Outros campos são removidos pelo sanitizador.
+</Aside>
+
+### Modo: create
+
+Cria um novo produto.
+
+#### Parâmetros Adicionais
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `new_product_name` | string | ✅ | Nome do novo produto |
+| `thumbnail_id` | int | ✅ | ID da imagem destacada |
+
+#### Resposta
+
+```json
+{
+  "success": true,
+  "data": {
+    "edit_url": "https://example.com/wp-admin/post.php?post=789&action=edit",
+    "created_product_id": 789
+  }
+}
+```
+
+#### Exemplo
+
+```javascript
+const formData = new FormData();
+formData.append('action', 'wc_apply_customization');
+formData.append('nonce', WPCreatorAjax.nonce_apply);
+formData.append('mode', 'create');
+formData.append('base_product_id', 45);
+formData.append('new_product_name', 'Camiseta Verde');
+formData.append('thumbnail_id', 123);
+formData.append('keys_to_copy[]', '_wapf_fieldgroup');
+formData.append('keys_to_copy[]', '_wapflcp_rows');
+formData.append('rows_subset[]', 0);
+formData.append('rows_subset[]', 1);
+formData.append('edited_rows', JSON.stringify([
+  { index: 0, patch: { x: 42.5, y: 53.0 } }
+]));
+
+fetch(WPCreatorAjax.ajax_url, {
+  method: 'POST',
+  body: formData
+}).then(r => r.json()).then(console.log);
+```
+
+### Modo: update
+
+Atualiza produtos existentes.
+
+#### Parâmetros Adicionais
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `target_ids[]` | array | ✅ | IDs dos produtos a atualizar |
+
+#### Resposta
+
+```json
+{
+  "success": true,
+  "data": {
+    "processed_count": 3,
+    "targets": [98, 99, 100]
+  }
+}
+```
+
+#### Funcionamento Interno
+
+1. Para cada produto alvo:
+   - **Backup** dos metas atuais (`_backup_*_timestamp`)
+   - Cópia dos metas do produto base
+   - Aplicação de subsets e patches
+   - **Preservação** da imagem destacada do produto alvo
+2. Retorna contagem de produtos processados
+
+#### Exemplo
+
+```javascript
+jQuery.ajax({
+  url: WPCreatorAjax.ajax_url,
+  method: 'POST',
+  data: {
+    action: 'wc_apply_customization',
+    nonce: WPCreatorAjax.nonce_apply,
+    mode: 'update',
+    base_product_id: 45,
+    'target_ids[]': [98, 99, 100],
+    'keys_to_copy[]': ['_wapflcp_rows'],
+    'rows_subset[]': [0, 1],
+    edited_rows: JSON.stringify([
+      { index: 0, patch: { x: 42.5 } }
+    ])
+  },
+  success: function(response) {
+    alert(`${response.data.processed_count} produtos atualizados!`);
+  }
+});
+```
+
+### Capability Requerida
+
+`manage_options`
+
+---
+
+## 4. wcpc_get_preview_data
+
+Retorna dados para renderização client-side do preview.
+
+### Parâmetros
+
+| Nome | Tipo | Obrigatório | Descrição |
+|------|------|-------------|-----------|
+| `action` | string | ✅ | `wcpc_get_preview_data` |
+| `nonce` | string | ✅ | Nonce com ação `wc_apply_customization` |
+| `target_product_id` | int | ✅ | ID do produto para preview |
+| `edited_rows` | string | ⚠️ | JSON com patches (opcional) |
+
+### Capability Requerida
+
+`edit_products`
+
+### Resposta
+
+```json
+{
+  "success": true,
+  "data": {
+    "row": {
+      "x": 41.111,
+      "y": 52.431,
+      "w": 20,
+      "h": 5,
+      "rotate": 0,
+      "size": 16,
+      "align": "center"
+    },
+    "product_image_url": "https://example.com/wp-content/uploads/2025/11/camiseta.jpg"
+  }
+}
+```
+
+### Campos Retornados
+
+#### `row`
+Dados da **Linha 0** (campo "Texto") para renderização:
+- `x`, `y`: Posição
+- `w`, `h`: Dimensões
+- `rotate`: Rotação em graus
+- `size`: Tamanho da fonte
+- `align`: Alinhamento do texto
+
+#### `product_image_url`
+URL completa da imagem destacada do produto alvo.
+
+### Funcionamento
+
+1. Carrega `_wapflcp_rows` do produto alvo
+2. Se `edited_rows` foi passado, aplica patches temporariamente
+3. Extrai dados da Linha 0
+4. Resolve valores condicionais (`fontSize.default`, `align.default`, etc.)
+5. Retorna JSON para renderização client-side
+
+<Aside type="caution">
+**Não gera imagem**. A renderização é feita pelo JavaScript no navegador usando HTML/CSS.
+</Aside>
+
+### Exemplo de Uso
+
+```javascript
+const editedRows = JSON.stringify([
+  { index: 0, patch: { x: 42.5, y: 53.0 } }
+]);
+
+jQuery.ajax({
+  url: WPCreatorAjax.ajax_url,
+  method: 'POST',
+  data: {
+    action: 'wcpc_get_preview_data',
+    nonce: WPCreatorAjax.nonce_apply,
+    target_product_id: 98,
+    edited_rows: editedRows
+  },
+  success: function(response) {
+    if (response.success) {
+      renderPreview(response.data.row, response.data.product_image_url);
+    }
+  }
+});
+```
+
+---
+
+## Tratamento de Erros
+
+Todos os endpoints seguem o padrão WordPress:
+
+### Estrutura de Erro
+
+```json
+{
+  "success": false,
+  "data": {
+    "message": "Descrição do erro"
+  }
+}
+```
+
+### HTTP Status Codes
+
+| Código | Situação |
+|--------|----------|
+| `200` | Sucesso (mesmo com `success: false`) |
+| `403` | Sem permissão (capability) |
+| `400` | Parâmetros inválidos |
+| `404` | Recurso não encontrado |
+| `500` | Erro interno do servidor |
+
+### Mensagens de Erro Comuns
+
+| Mensagem | Causa |
+|----------|-------|
+| "Permissão insuficiente." | Usuário sem capability requerida |
+| "Dados incompletos." | Parâmetros obrigatórios faltando |
+| "Produto base não encontrado." | ID inválido ou produto não existe |
+| "Nenhum produto alvo selecionado." | Array `target_ids` vazio |
+| "Produto sem imagem destacada." | Preview sem imagem configurada |
+
+---
+
+## Notas de Segurança
+
+### Validação de Nonces
+
+Todos os endpoints validam nonce específico:
+
+```php
+check_ajax_referer('wc_fetch_fieldgroup_fields', 'nonce');
+```
+
+### Capabilities
+
+Verifique a tabela de requisitos:
+
+| Endpoint | Capability |
+|----------|------------|
+| `wc_create_product` | (via nonce) |
+| `wc_fetch_fieldgroup_fields` | `manage_options` |
+| `wc_apply_customization` | `manage_options` |
+| `wcpc_get_preview_data` | `edit_products` |
+
+### Sanitização
+
+- Todos os inputs passam por sanitização apropriada
+- Números decimais aceitam vírgula (PT-BR) via normalização
+- HTML é escapado antes de retornar ao cliente
+- Patches são validados contra schema inferido
+
+---
+
+## Próximos Passos
+
+- [Estrutura de Metadados →](/referencia/estrutura-metadados/)
+- [JavaScript API →](/referencia/javascript-api/)
+- [Hooks e Filtros →](/referencia/hooks-filtros/)

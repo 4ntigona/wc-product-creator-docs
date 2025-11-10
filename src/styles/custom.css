@@ -1,0 +1,100 @@
+/* Customizações para WC Product Creator Docs */
+
+:root {
+	/* Paleta de cores do cliente */
+	--brand-primary: #d3a296;
+	--brand-secondary: #d3a296;
+	--brand-gray: #6a6a6a;
+	--brand-black: #000000;
+	--brand-light-gray: #cecece;
+	--brand-lighter-gray: #e6e6e5;
+	--brand-lightest: #FBFBFB;
+	--brand-white: #ffffff;
+
+	/* Cores principais - usando paleta do cliente */
+	--sl-color-accent-low: #f7f0ee;
+	--sl-color-accent: var(--brand-primary);
+	--sl-color-accent-high: #c08f82;
+	--sl-color-white: var(--brand-white);
+	--sl-color-gray-1: var(--brand-lightest);
+	--sl-color-gray-2: var(--brand-lighter-gray);
+	--sl-color-gray-3: var(--brand-light-gray);
+	--sl-color-gray-4: var(--brand-gray);
+	--sl-color-gray-5: #4a4a4a;
+	--sl-color-gray-6: #2a2a2a;
+	--sl-color-black: var(--brand-black);
+
+	/* Esquema de cores */
+	--sl-color-bg: var(--brand-white);
+	--sl-color-bg-nav: var(--brand-white);
+	--sl-color-bg-sidebar: var(--brand-lightest);
+	--sl-color-text: var(--brand-black);
+	--sl-color-text-accent: var(--brand-primary);
+	--sl-color-hairline: var(--brand-lighter-gray);
+	--sl-color-hairline-light: var(--brand-lightest);
+}
+
+/* Cards de recursos */
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 1rem;
+	margin: 2rem 0;
+}
+
+/* Destaques de código */
+.astro-code {
+	margin: 1.5rem 0;
+	border-radius: 8px;
+	padding: 1rem;
+}
+
+/* Callouts customizados */
+.callout {
+	margin: 1.5rem 0;
+	border-left: 4px solid var(--sl-color-accent);
+	border-radius: 4px;
+	background: var(--sl-color-accent-low);
+	padding: 1rem;
+}
+
+/* Tabelas responsivas */
+table {
+	display: block;
+	width: 100%;
+	overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+	table {
+		display: table;
+	}
+}
+
+/* Badges de método HTTP */
+.http-method {
+	display: inline-block;
+	border-radius: 4px;
+	padding: 0.25rem 0.5rem;
+	font-weight: 600;
+	font-size: 0.875rem;
+	text-transform: uppercase;
+}
+
+.http-method.post {
+	background: #0d6efd;
+	color: white;
+}
+
+.http-method.get {
+	background: #198754;
+	color: white;
+}
+
+/* Diagramas Mermaid */
+.mermaid {
+	margin: 1.5rem 0;
+	border-radius: 8px;
+	background: var(--sl-color-white);
+	padding: 1rem;
+}

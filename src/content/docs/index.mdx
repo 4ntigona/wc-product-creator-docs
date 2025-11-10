@@ -1,40 +1,118 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: WC Product Creator
+description: Plugin WordPress para criação e atualização em lote de produtos WooCommerce customizáveis
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  tagline: Simplifique a gestão de produtos customizáveis com ferramentas visuais e automação inteligente
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Começar Agora
+      link: /inicio/instalacao/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+      variant: primary
+    - text: Ver no GitHub
+      link: https://github.com/4ntigona/wc-product-creator
       icon: external
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Recursos Principais
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
-	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
-	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
-	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
-	</Card>
+  <Card title="Criação em Lote" icon="add-document">
+    Crie múltiplos produtos a partir de um template base, copiando campos de personalização e dados configuráveis de forma automática.
+  </Card>
+  
+  <Card title="Editor Visual de Posições" icon="pencil">
+    Interface intuitiva para ajustar posicionamento (X/Y) de elementos, preservando estilos e cores do produto original.
+  </Card>
+  
+  <Card title="Preview em Tempo Real" icon="magnifier">
+    Visualize o layout antes de aplicar alterações, com renderização client-side das posições dos elementos.
+  </Card>
+  
+  <Card title="Ajuste Global" icon="setting">
+    Aplique deslocamentos em massa a todos os campos simultaneamente, com suporte a formato decimal PT-BR (vírgula).
+  </Card>
+  
+  <Card title="Atualização em Massa" icon="document">
+    Atualize múltiplos produtos existentes de uma só vez, mantendo backups automáticos das configurações anteriores.
+  </Card>
+  
+  <Card title="Busca e Filtros" icon="magnifier">
+    Encontre rapidamente campos e elementos com sistema de busca integrado e seleção em massa.
+  </Card>
 </CardGrid>
+
+## Como Funciona
+
+O WC Product Creator foi desenvolvido para trabalhar com produtos WooCommerce que utilizam plugins de personalização (como WAPF - WooCommerce Advanced Product Fields). O fluxo de trabalho é simples e direto:
+
+1. **Selecione o Produto Base**: Escolha um produto existente que servirá como modelo
+2. **Escolha os Campos**: Selecione quais campos e posicionamentos deseja copiar
+3. **Ajuste as Posições**: Use o editor visual para modificar coordenadas X e Y
+4. **Visualize**: Confira o preview antes de aplicar
+5. **Execute**: Crie novos produtos ou atualize produtos existentes em lote
+
+## Casos de Uso
+
+### Linhas de Produtos Personalizáveis
+
+Você tem uma linha de camisetas personalizáveis e precisa criar variações para diferentes cores de tecido, mantendo as mesmas áreas de personalização (nome, número, logo).
+
+**Solução**: Use um produto base como template e crie rapidamente todas as variações, ajustando apenas as posições conforme necessário para cada cor de fundo.
+
+### Atualização de Layout
+
+Após um redesign das áreas de impressão, você precisa atualizar o posicionamento dos campos em dezenas de produtos.
+
+**Solução**: Configure as novas posições em um produto base e aplique as mudanças em massa para todos os produtos da categoria.
+
+### Ajustes Finos de Posição
+
+Pequenos ajustes de alinhamento são necessários em todos os produtos após mudança no template de impressão.
+
+**Solução**: Use o recurso de Ajuste Global para deslocar todos os elementos em X e/ou Y simultaneamente.
+
+## Requisitos Técnicos
+
+- WordPress 5.8 ou superior
+- WooCommerce 6.0 ou superior
+- PHP 7.4 ou superior
+- Plugin de personalização compatível (ex: WAPF)
+
+## Próximos Passos
+
+<CardGrid>
+  <Card title="Instalação" icon="rocket">
+    [Guia completo de instalação →](/inicio/instalacao/)
+    
+    Configure o plugin em poucos minutos.
+  </Card>
+  
+  <Card title="Início Rápido" icon="open-book">
+    [Tutorial passo a passo →](/inicio/inicio-rapido/)
+    
+    Crie seu primeiro produto em menos de 5 minutos.
+  </Card>
+  
+  <Card title="Funcionalidades" icon="star">
+    [Explore os recursos →](/funcionalidades/visao-geral/)
+    
+    Conheça tudo que o plugin oferece.
+  </Card>
+  
+  <Card title="Referência API" icon="information">
+    [Endpoints AJAX →](/referencia/endpoints-ajax/)
+    
+    Documentação técnica completa.
+  </Card>
+</CardGrid>
+
+## Suporte e Comunidade
+
+- 📖 [Documentação Completa](/inicio/instalacao/)
+- 🐛 [Reportar Bug](https://github.com/4ntigona/wc-product-creator/issues)
+- 💬 [Discussões](https://github.com/4ntigona/wc-product-creator/discussions)
+- 📧 Contato: suporte@example.com

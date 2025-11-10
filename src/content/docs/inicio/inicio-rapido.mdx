@@ -1,0 +1,154 @@
+---
+title: Início Rápido
+description: Tutorial passo a passo para criar seu primeiro produto em menos de 5 minutos
+---
+import { Steps, Aside } from '@astrojs/starlight/components';
+
+
+Este guia rápido vai te ajudar a criar seu primeiro produto usando o WC Product Creator em menos de 5 minutos.
+
+## Pré-requisitos
+
+Antes de começar, certifique-se de ter:
+
+- ✅ WC Product Creator instalado e ativo
+- ✅ Pelo menos um produto WooCommerce existente com campos personalizáveis
+- ✅ Acesso admin ao WordPress
+
+## Criando Seu Primeiro Produto
+
+<Steps>
+
+1. **Acesse a página do plugin**
+   
+   No painel do WordPress, clique em **"Criar Produto"** no menu lateral.
+
+2. **Escolha o modo de operação**
+   
+   Você verá duas opções:
+   - **Criar novo produto**: Cria um produto do zero
+   - **Atualizar produtos existentes**: Modifica produtos já cadastrados
+   
+   Selecione **"Criar novo produto"**.
+
+3. **Selecione o produto base**
+   
+   No dropdown **"Produto Base"**, escolha o produto que servirá como template. Este produto deve ter campos de personalização já configurados.
+   
+   <Aside type="tip">
+     O produto base não será modificado. Ele serve apenas como referência para copiar configurações.
+   </Aside>
+
+4. **Defina o nome do novo produto**
+   
+   No campo **"Nome do Novo Produto"**, digite o nome que o novo produto terá (ex: "Camiseta Verde Personalizada").
+
+5. **Selecione a imagem destacada**
+   
+   Clique em **"Selecionar Imagem"** e escolha a imagem de fundo que será usada no novo produto.
+   
+   <Aside type="note">
+     Esta imagem substituirá a imagem do produto base nas áreas de personalização.
+   </Aside>
+
+6. **Carregue o conteúdo do produto base**
+   
+   Clique no botão **"Carregar conteúdo do produto base"**.
+   
+   Dois painéis aparecerão:
+   - **Opções de personalização**: Campos configuráveis (nome, texto, upload, etc.)
+   - **Posicionamentos da personalização**: Elementos visuais com coordenadas X/Y
+
+7. **Selecione o que deseja copiar**
+   
+   Por padrão, tudo está selecionado. Você pode:
+   - Desmarcar itens específicos que não quer copiar
+   - Usar os botões **"Selecionar todos"** / **"Nenhum"** / **"Inverter seleção"**
+   - Filtrar itens usando a barra de busca
+
+8. **Ajuste as posições (opcional)**
+   
+   Se necessário, clique em **"Editar"** em qualquer linha do painel "Posicionamentos" para ajustar coordenadas X e Y.
+   
+   <Aside type="tip">
+     Use o painel **"Ajuste Global de Posicionamento"** para mover todos os elementos de uma vez (útil quando a nova imagem tem dimensões diferentes).
+   </Aside>
+
+9. **Visualize o resultado (opcional)**
+   
+   Clique em **"✨ Gerar prévia"** para ver como ficará o layout com suas alterações.
+
+10. **Crie o produto**
+    
+    Clique no botão **"Criar Produto"** no final da página.
+    
+    Aguarde alguns segundos. Você verá uma mensagem de sucesso com um link para editar o novo produto.
+
+</Steps>
+
+## Parabéns! 🎉
+
+Você criou seu primeiro produto usando o WC Product Creator. O novo produto foi salvo como **rascunho** e está pronto para ser editado e publicado.
+
+## Próximos Passos
+
+Agora que você domina o básico, explore recursos mais avançados:
+
+### Atualização em Massa
+
+Aprenda a atualizar vários produtos de uma vez:
+- [Guia: Atualizando Produtos →](/guias/atualizando-produtos/)
+
+### Editor de Posições
+
+Domine o editor visual para ajustar coordenadas com precisão:
+- [Guia: Editando Posições →](/guias/editando-posicoes/)
+
+### Ajuste Global
+
+Use o deslocamento global para reposicionar elementos em massa:
+- [Guia: Ajuste Global →](/guias/ajuste-global/)
+
+### Sistema de Preview
+
+Entenda como funciona o sistema de visualização:
+- [Funcionalidade: Preview →](/funcionalidades/sistema-preview/)
+
+## Dicas Rápidas
+
+<Aside type="tip" title="Dica: Atalhos de Teclado">
+- **Ctrl/Cmd + F**: Focar na barra de busca
+- **Expandir todos**: Ver todos os editores de posição de uma vez
+- **Fechar todos**: Colapsar todos os cards para navegar melhor
+</Aside>
+
+<Aside type="caution" title="Atenção: Backup Automático">
+Ao atualizar produtos existentes (modo "atualizar"), o plugin cria backups automáticos com timestamp. Você pode encontrá-los nos metadados do produto com prefixo `_backup_`.
+</Aside>
+
+## Problemas Comuns
+
+### O botão "Carregar conteúdo" não funciona
+
+**Solução**: Certifique-se de ter selecionado um produto base no dropdown antes de clicar no botão.
+
+### Não vejo nenhum campo carregado
+
+**Possíveis causas**:
+- O produto base não tem campos de personalização configurados
+- Plugin de personalização (WAPF) não está ativo
+- Produto base está com metadados corrompidos
+
+**Solução**: Teste com outro produto base que você sabe que tem campos configurados.
+
+### Preview não está funcionando
+
+**Causa**: Produto selecionado não tem imagem destacada
+
+**Solução**: Configure uma imagem destacada para o produto antes de gerar o preview.
+
+## Recursos Adicionais
+
+- [Documentação Completa](/funcionalidades/visao-geral/)
+- [Referência da API](/referencia/endpoints-ajax/)
+- [Solução de Problemas](/solucao-problemas/problemas-comuns/)

@@ -1,0 +1,190 @@
+---
+title: Instalação
+description: Guia completo para instalar e configurar o WC Product Creator
+---
+
+## Requisitos
+
+Antes de instalar o WC Product Creator, certifique-se de que seu ambiente atende aos seguintes requisitos:
+
+### Requisitos Obrigatórios
+
+- **WordPress**: 5.8 ou superior
+- **WooCommerce**: 6.0 ou superior
+- **PHP**: 7.4 ou superior
+- **Plugin de Personalização**: Um plugin compatível como WAPF (WooCommerce Advanced Product Fields)
+
+### Requisitos Recomendados
+
+- **PHP**: 8.0 ou superior
+- **Memória PHP**: 256MB ou mais
+- **Ambiente**: Servidor com suporte a HTTPS
+
+## Métodos de Instalação
+
+### Método 1: Instalação como MU Plugin (Recomendado)
+
+Este é o método recomendado pois o plugin será carregado automaticamente pelo WordPress.
+
+1. **Baixe o plugin** do repositório GitHub ou do arquivo .zip fornecido
+
+2. **Extraia os arquivos** para a pasta de MU Plugins:
+   ```bash
+   wp-content/mu-plugins/wc-product-creator/
+   ```
+
+3. **Estrutura esperada**:
+   ```
+   wp-content/
+   └── mu-plugins/
+       └── wc-product-creator/
+           ├── wc-product-creator.php
+           ├── script.js
+           ├── style.css
+           ├── scripts/
+           └── _documentation/
+   ```
+
+4. **Crie um loader** (caso sua instalação não carregue automaticamente subpastas):
+   
+   Crie o arquivo `wp-content/mu-plugins/wc-product-creator-loader.php`:
+   ```php
+   <?php
+   /**
+    * Plugin Name: WC Product Creator Loader
+    * Description: Loader para o MU plugin WC Product Creator
+    * Version: 1.0
+    */
+   
+   if (file_exists(WPMU_PLUGIN_DIR . '/wc-product-creator/wc-product-creator.php')) {
+       require_once WPMU_PLUGIN_DIR . '/wc-product-creator/wc-product-creator.php';
+   }
+   ```
+
+5. **Verifique a instalação**: O plugin estará ativo automaticamente. Vá para **WP Admin → Criar Produto** no menu lateral.
+
+### Método 2: Instalação como Plugin Regular
+
+Se preferir instalar como plugin regular (com possibilidade de ativar/desativar):
+
+1. **Baixe o plugin** do repositório
+
+2. **Extraia os arquivos** para:
+   ```bash
+   wp-content/plugins/wc-product-creator/
+   ```
+
+3. **Ative o plugin**:
+   - Vá para **Plugins → Plugins Instalados**
+   - Localize "WooCommerce Product Creator"
+   - Clique em **Ativar**
+
+## Verificação da Instalação
+
+Após instalar, verifique se tudo está funcionando:
+
+### 1. Menu Admin
+
+No painel do WordPress, você deve ver um novo item de menu chamado **"Criar Produto"** (ícone com estrelas).
+
+### 2. Assets Carregados
+
+Acesse a página "Criar Produto" e abra o DevTools (F12). Na aba Network, verifique se os seguintes arquivos foram carregados:
+
+- `script.js`
+- `style.css`
+
+### 3. Variáveis JavaScript
+
+No console do DevTools, digite:
+```javascript
+console.log(WPCreatorAjax);
+```
+
+Você deve ver um objeto com as propriedades:
+- `ajax_url`
+- `nonce`
+- `nonce_fetch`
+- `nonce_apply`
+- `i18n` (textos localizados)
+
+## Configuração Inicial
+
+### Permissões
+
+O plugin requer as seguintes capabilities do WordPress:
+
+- **`manage_options`**: Para acessar a página admin e executar operações
+- **`edit_products`**: Para usar o sistema de preview
+
+Por padrão, apenas usuários com função de **Administrador** terão acesso completo.
+
+### Configurações Opcionais
+
+#### Debug Mode
+
+Para ativar o modo de debug e ver informações adicionais no console:
+
+1. No `wp-config.php`, certifique-se de ter:
+   ```php
+   define('WP_DEBUG', true);
+   define('WP_DEBUG_LOG', true);
+   ```
+
+2. Ao carregar a página admin, o `<body>` terá a classe `wcpc-debug`
+
+3. IDs técnicos serão exibidos ao lado dos labels dos campos
+
+#### Customizar Textos
+
+Os textos da interface podem ser traduzidos/customizados usando filtros do WordPress.
+
+Exemplo para mudar o título do menu:
+
+```php
+add_filter('gettext', function($translation, $text, $domain) {
+    if ($domain === 'wc-product-creator' && $text === 'Criar Produto') {
+        return 'Gerenciar Produtos';
+    }
+    return $translation;
+}, 10, 3);
+```
+
+## Resolução de Problemas
+
+### Plugin não aparece no menu
+
+**Possíveis causas**:
+- Usuário sem permissão `manage_options`
+- Arquivos não foram extraídos corretamente
+- Loader não foi criado (instalação MU Plugin)
+
+**Solução**: 
+1. Verifique se os arquivos estão no caminho correto
+2. Confirme que o arquivo `wc-product-creator.php` existe
+3. Crie o loader conforme instruções acima
+
+### Erro "Cannot read property 'ajax_url'"
+
+**Causa**: Script não foi carregado ou variáveis não foram localizadas
+
+**Solução**:
+1. Limpe o cache do WordPress
+2. Desative plugins de minificação temporariamente
+3. Verifique no código-fonte da página se `WPCreatorAjax` está presente
+
+### Erro de permissão ao executar ações
+
+**Causa**: Nonce inválido ou usuário sem capability
+
+**Solução**:
+1. Faça logout e login novamente
+2. Limpe cookies do navegador
+3. Verifique se o usuário é Administrador
+
+## Próximos Passos
+
+Agora que o plugin está instalado, continue para:
+
+- [Início Rápido →](/inicio/inicio-rapido/) - Crie seu primeiro produto
+- [Visão Geral das Funcionalidades →](/funcionalidades/visao-geral/) - Conheça todos os recursos

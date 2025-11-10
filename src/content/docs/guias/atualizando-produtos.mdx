@@ -1,0 +1,325 @@
+---
+title: Atualizando Produtos
+description: Guia para atualizar produtos existentes em lote
+---
+
+import { Steps, Aside, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Este guia mostra como atualizar múltiplos produtos existentes aplicando customizações de um produto base.
+
+## Visão Geral
+
+O modo **Atualizar** permite aplicar configurações de um produto base em vários produtos de destino simultaneamente. É ideal para:
+
+- Sincronizar layouts entre produtos relacionados
+- Atualizar campos personalizados em massa
+- Corrigir posicionamento em lote após mudanças de design
+- Migrar configurações entre produtos
+
+<Aside type="caution">
+**Backups automáticos:** Antes de sobrescrever, o plugin salva os valores atuais em meta keys com timestamp (`_backup_wapf_fieldgroup_1699999999`). Você pode restaurá-los manualmente se necessário.
+</Aside>
+
+## Processo de Atualização
+
+<Steps>
+
+1. **Acesse a página do plugin**
+   
+   No painel WordPress, vá em **WooCommerce → Criador de Produtos**.
+
+2. **Selecione o modo Atualizar**
+   
+   Clique no botão superior para alternar para modo **"Atualizar"** (o texto e ícone mudarão).
+
+3. **Escolha o produto base**
+   
+   Selecione o produto cujas configurações serão copiadas para os produtos de destino.
+
+4. **Carregue o conteúdo**
+   
+   Clique em **"Carregar conteúdo do produto base"** para visualizar campos e linhas disponíveis.
+
+5. **Selecione os produtos de destino**
+   
+   Na lista multi-seleção "Produtos de destino", escolha quais produtos serão atualizados.
+   
+   <Aside type="tip">
+   Segure `Ctrl` (Windows/Linux) ou `Cmd` (Mac) para selecionar múltiplos produtos.
+   </Aside>
+
+6. **Filtre o conteúdo (opcional)**
+   
+   Escolha quais elementos copiar:
+   
+   - ✅ **Campos do grupo**: sobrescreve `_wapf_fieldgroup`
+   - ✅ **Linhas de layout**: sobrescreve `_wapflcp_rows`
+   
+   Use busca e checkboxes para selecionar itens específicos.
+
+7. **Edite posições (opcional)**
+   
+   Expanda linhas para ajustar coordenadas X/Y antes de aplicar.
+
+8. **Aplique ajuste global (opcional)**
+   
+   Use offsets para deslocar todas as linhas:
+   
+   - **Offset X**: `10` move 10px à direita
+   - **Offset Y**: `-5` move 5px para cima
+
+9. **Atualize os produtos**
+   
+   Clique em **"Atualizar Produtos"**. O plugin irá:
+   
+   - Criar backups dos valores atuais
+   - Aplicar configurações filtradas e editadas
+   - Substituir imagens pela thumbnail de cada produto de destino
+   - Exibir resumo com contagem de produtos processados
+
+</Steps>
+
+## Exemplo Prático
+
+### Cenário: Atualizar layout em 3 variações de camiseta
+
+<Tabs>
+<TabItem label="Configuração">
+
+**Produto Base:** ID 100 - "Camiseta Template"  
+**Produtos de Destino:**
+- ID 101 - Camiseta P Branca
+- ID 102 - Camiseta M Preta  
+- ID 103 - Camiseta G Vermelha
+
+**Objetivo:** Atualizar posicionamento das linhas de texto, mantendo os campos personalizados intactos.
+
+**Configuração:**
+- ✅ Copiar: `_wapflcp_rows` (linhas)
+- ❌ Não copiar: `_wapf_fieldgroup` (campos já configurados)
+- Selecionar linhas: 0, 2, 5 (títulos e logos)
+- Ajuste global: Y +10 (mover tudo 10px para baixo)
+
+</TabItem>
+
+<TabItem label="Execução">
+
+**Passo 1:** Backups criados
+```
+Produto 101:
+  _backup_wapflcp_rows_1699640000 ← cópia do _wapflcp_rows atual
+
+Produto 102:
+  _backup_wapflcp_rows_1699640000 ← cópia do _wapflcp_rows atual
+
+Produto 103:
+  _backup_wapflcp_rows_1699640000 ← cópia do _wapflcp_rows atual
+```
+
+**Passo 2:** Transformações aplicadas
+
+Para cada produto:
+1. Copia linhas 0, 2, 5 do produto base
+2. Aplica offset Y +10
+3. Substitui imagem do base (ID 999) pela thumbnail do destino
+4. Salva em `_wapflcp_rows`
+
+**Exemplo - Linha 0 no produto 101:**
+```json
+// Base (ID 100)
+{ "x": 50, "y": 100, "image": 999 }
+
+// Após transformação (ID 101, thumbnail: 1001)
+{ "x": 50, "y": 110, "image": 1001 }
+//              ↑ +10 offset    ↑ thumbnail 101
+```
+
+</TabItem>
+
+<TabItem label="Resultado">
+
+**Resposta do endpoint:**
+```json
+{
+  "success": true,
+  "data": {
+    "processed_count": 3,
+    "targets": [
+      {
+        "product_id": 101,
+        "success": true,
+        "edit_url": "/wp-admin/post.php?post=101&action=edit"
+      },
+      {
+        "product_id": 102,
+        "success": true,
+        "edit_url": "/wp-admin/post.php?post=102&action=edit"
+      },
+      {
+        "product_id": 103,
+        "success": true,
+        "edit_url": "/wp-admin/post.php?post=103&action=edit"
+      }
+    ]
+  }
+}
+```
+
+**Meta keys atualizados:**
+- 3 produtos com `_wapflcp_rows` sincronizados
+- 3 backups criados (recuperáveis manualmente via phpMyAdmin)
+- Campos (`_wapf_fieldgroup`) mantidos intactos
+
+</TabItem>
+</Tabs>
+
+## Substituição de Imagens
+
+A substituição automática de imagens funciona assim:
+
+1. **Detecta imagem do produto base** nas configurações de linhas
+2. **Para cada produto de destino:**
+   - Obtém a thumbnail (imagem destacada)
+   - Substitui o ID da imagem base pelo ID da thumbnail
+   - Substitui a URL da imagem base pela URL da thumbnail
+
+<Aside type="note">
+**Heurística:** Se houver apenas 1 attachment único referenciado nas linhas, ele será considerado "a imagem principal" e substituído pela thumbnail do produto de destino.
+</Aside>
+
+### Exemplo de substituição
+
+**Produto base (ID 100):**
+```json
+{
+  "rows": [
+    { "type": "image", "attachment": 999, "url": "camiseta-base.jpg" },
+    { "type": "text", "bg": 888, "url": "fundo.png" }
+  ]
+}
+```
+
+**Produto destino (ID 101, thumbnail: 1001, URL: camiseta-branca.jpg):**
+```json
+{
+  "rows": [
+    { "type": "image", "attachment": 1001, "url": "camiseta-branca.jpg" },
+    { "type": "text", "bg": 888, "url": "fundo.png" }
+  ]
+}
+```
+
+Note que:
+- ✅ Imagem principal (999 → 1001) foi substituída
+- ✅ URL também foi atualizada
+- ❌ Imagem de fundo (888) permaneceu inalterada
+
+## Metadados e Backups
+
+### Metadados atualizados
+
+| Meta Key | Quando é copiado | Transformação |
+|----------|------------------|---------------|
+| `_wapf_fieldgroup` | Se checkbox marcado | ID do grupo → `p_{target_id}` |
+| `_wapflcp_rows` | Se checkbox marcado | Imagens + posições ajustadas |
+
+### Backups criados
+
+Antes de sobrescrever, são salvos:
+
+```
+_backup_wapf_fieldgroup_{timestamp}
+_backup_wapflcp_rows_{timestamp}
+```
+
+**Timestamp:** Unix epoch (ex: `1699640123`)
+
+<Aside type="caution">
+Backups **não são restaurados automaticamente**. Se precisar reverter:
+1. Acesse phpMyAdmin ou use WP-CLI
+2. Copie o valor do backup
+3. Salve de volta na meta key original
+</Aside>
+
+## Validações e Segurança
+
+- ✅ **Nonce**: `wc_apply_customization`
+- ✅ **Capability**: `manage_options`
+- ✅ **Produtos de destino**: validados individualmente
+- ✅ **Meta keys**: whitelist apenas `_wapf_fieldgroup` e `_wapflcp_rows`
+- ✅ **Edições**: apenas X/Y permitidos, cor/tamanho/rotação bloqueados
+
+## Casos de Uso Avançados
+
+### 1. Sincronizar família de produtos
+
+**Cenário:** 20 variações de caneca com layouts idênticos
+
+**Solução:**
+1. Crie 1 produto "template" perfeito
+2. Use modo Atualizar para aplicar em todos
+3. Ajuste global se precisar reposicionar conjunto
+
+---
+
+### 2. Migração de design
+
+**Cenário:** Designer atualizou posicionamento no produto principal
+
+**Solução:**
+1. Produto base = versão nova
+2. Destinos = produtos com layout antigo
+3. Copiar apenas `_wapflcp_rows`
+
+---
+
+### 3. Correção em massa
+
+**Cenário:** Logo ficou desalinhado em 50 produtos
+
+**Solução:**
+1. Corrija 1 produto manualmente
+2. Use como base
+3. Selecione apenas a linha do logo
+4. Aplique offset se necessário
+
+## Troubleshooting
+
+### Problema: Alguns produtos não foram atualizados
+
+**Causa:** Produtos de destino podem ter:
+- Sido movidos para lixeira
+- Permissões restritivas
+- Meta corrompida
+
+**Solução:** Verifique o array `targets` na resposta JSON. Produtos com `success: false` terão mensagem de erro.
+
+---
+
+### Problema: Backup não aparece
+
+**Causa:** Meta key só é criado se havia valor anterior.
+
+**Exemplo:**
+- Produto novo (sem `_wapflcp_rows`) → sem backup
+- Produto com rows → backup criado
+
+---
+
+### Problema: Imagem não foi substituída
+
+**Causas possíveis:**
+1. Produto de destino não tem thumbnail definida
+2. Produto base referencia múltiplas imagens (heurística falha)
+3. Referência usa URL absoluta não-detectável
+
+**Solução:** 
+- Defina thumbnails em todos os produtos
+- Use imagens da biblioteca de mídia (não URLs externas)
+
+## Próximos Passos
+
+- **[Criando Produtos](/guias/criando-produtos/)** - Criar novos produtos do zero
+- **[Editando Posições](/guias/editando-posicoes/)** - Ajustes finos de coordenadas
+- **[Ajuste Global](/guias/ajuste-global/)** - Offsets em lote
+- **[Referência de Endpoints](/referencia/endpoints-ajax/)** - Detalhes técnicos

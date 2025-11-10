@@ -1,0 +1,308 @@
+---
+title: Visão Geral das Funcionalidades
+description: Conheça todos os recursos do WC Product Creator
+---
+
+import { Card, CardGrid, Aside } from '@astrojs/starlight/components';
+
+O WC Product Creator oferece um conjunto completo de ferramentas para gerenciar produtos WooCommerce personalizáveis de forma eficiente.
+
+## Modos de Operação
+
+### Modo Criar
+
+Cria novos produtos a partir de um template base, ideal para:
+- Criar variações de produtos com diferentes cores/imagens
+- Duplicar produtos mantendo configurações
+- Iniciar linha de produtos personalizáveis
+
+**Características**:
+- Produto criado como **rascunho**
+- Nome e imagem destacada definidos pelo usuário
+- Metadados copiados e transformados automaticamente
+- IDs e referências atualizadas para o novo produto
+
+[Ver guia detalhado →](/guias/criando-produtos/)
+
+### Modo Atualizar
+
+Atualiza múltiplos produtos existentes simultaneamente, ideal para:
+- Aplicar mudanças de layout em lote
+- Atualizar posicionamentos após redesign
+- Sincronizar configurações entre produtos
+
+**Características**:
+- **Backups automáticos** antes de cada atualização
+- Seleção múltipla de produtos alvo
+- Preservação da imagem destacada de cada produto
+- Operação em lote com relatório de progresso
+
+[Ver guia detalhado →](/guias/atualizando-produtos/)
+
+## Gestão de Conteúdo
+
+### Carregamento Seletivo
+
+<CardGrid>
+  <Card title="Opções de Personalização" icon="document">
+    Campos configuráveis do WAPF:
+    - Campos de texto
+    - Uploads de imagem
+    - Seletores de cor
+    - Opções dropdown
+  </Card>
+  
+  <Card title="Posicionamentos" icon="setting">
+    Elementos visuais com coordenadas:
+    - Posição X e Y
+    - Rotação e tamanho (herdados)
+    - Cores do produto-origem (preservadas)
+  </Card>
+</CardGrid>
+
+**Recursos de seleção**:
+- ✅ Checkbox individual para cada item
+- ✅ Seleção em massa (todos/nenhum/inverter)
+- ✅ Busca em tempo real
+- ✅ Contadores visuais
+- ✅ Labels amigáveis auto-gerados
+
+### Sistema de Labels Inteligentes
+
+O plugin deriva automaticamente nomes amigáveis para os elementos, facilitando a identificação:
+
+**Prioridade de resolução**:
+1. Nome direto do campo (`label`, `title`, `name`)
+2. Referência a campo do fieldgroup
+3. Título do anexo/imagem associada
+4. Primeira opção disponível
+5. Fallback: "Linha {n}"
+
+<Aside type="tip">
+Isso significa que mesmo sem configuração manual, você verá nomes descritivos como "Logo da Empresa" ao invés de "row_42".
+</Aside>
+
+## Editor de Posições
+
+### Edição Restrita (Position-Only)
+
+O editor permite modificar **apenas coordenadas X e Y**, preservando:
+- ❌ Tamanho (width/height)
+- ❌ Rotação (angle/rotate)
+- ❌ Cores (color/fill/stroke)
+- ❌ Alinhamento (align)
+- ❌ Tipografia (fontSize, lineHeight, etc.)
+
+**Por quê?** Isso garante consistência visual e evita quebras no layout do produto original.
+
+[Saiba mais sobre a filosofia →](/funcionalidades/edicao-somente-posicao/)
+
+### Interface do Editor
+
+Para cada linha selecionada:
+
+```
+┌─────────────────────────────────────────┐
+│ Linha 0 - Nome do Cliente               │  [▼ Editar]
+│ ● Cores do produto-origem               │
+├─────────────────────────────────────────┤
+│ Posição                                 │
+│ ┌────────┐  ┌────────┐                 │
+│ │ X      │  │ Y      │                 │
+│ │ [-][41,111][+]  [-][52,431][+]      │
+│ └────────┘  └────────┘                 │
+│                                         │
+│ [Aplicar aos selecionados] [Redefinir] │
+└─────────────────────────────────────────┘
+```
+
+**Recursos**:
+- Steppers +/− para ajuste fino (incremento de 0.5)
+- Input manual com suporte a vírgula decimal (PT-BR)
+- Aplicar valor a múltiplas linhas simultaneamente
+- Redefinir para valores originais
+
+[Guia completo do editor →](/guias/editando-posicoes/)
+
+## Ajuste Global de Posicionamento
+
+Ferramenta poderosa para deslocar **todos** os elementos de uma vez.
+
+### Casos de Uso
+
+**Cenário 1: Mudança de Dimensões**
+- Imagem original: 800×600px
+- Nova imagem: 1000×800px
+- Solução: Deslocar X: +100, Y: +100
+
+**Cenário 2: Reposicionamento Fino**
+- Layout está ligeiramente desalinhado
+- Solução: Deslocar Y: -0,5 para subir tudo meio centímetro
+
+**Cenário 3: Espelhamento Horizontal**
+- Produto com layout invertido
+- Solução: Calcular offset negativo baseado na largura
+
+### Como Funciona
+
+1. Define deslocamento em X e/ou Y
+2. Plugin aplica delta a **todas as linhas**
+3. Respeita a chave real de cada linha (`x`/`left`, `y`/`top`)
+4. Preserva formato decimal original (vírgula/ponto)
+5. Atualiza editores abertos em tempo real
+
+<Aside type="note">
+Suporta formato PT-BR com vírgula: `-0,5` é convertido corretamente para `-0.5` nos cálculos.
+</Aside>
+
+[Guia detalhado do ajuste global →](/guias/ajuste-global/)
+
+## Sistema de Preview
+
+Visualização client-side do layout antes de aplicar alterações.
+
+### Funcionamento
+
+1. **Busca dados** do produto alvo via AJAX
+2. **Aplica edições** temporárias (incluindo offset global)
+3. **Retorna JSON** com posição e URL da imagem
+4. **Renderiza HTML/CSS** no navegador (sem geração de imagem)
+
+**Estrutura do retorno**:
+```json
+{
+  "row": {
+    "x": 41.111,
+    "y": 52.431,
+    "w": 20,
+    "h": 5,
+    "rotate": 0,
+    "size": 16,
+    "align": "center"
+  },
+  "product_image_url": "https://example.com/imagem.jpg"
+}
+```
+
+<Aside type="caution">
+O preview mostra **apenas a Linha 0 (campo "Texto")**. É uma prévia de posicionamento, não uma renderização completa do produto.
+</Aside>
+
+[Documentação completa do preview →](/funcionalidades/sistema-preview/)
+
+## Busca e Filtros
+
+### Busca em Tempo Real
+
+- Filtra por nome/label do campo
+- Case-insensitive
+- Atualiza resultados instantaneamente
+- Funciona em ambos os painéis (Opções e Posicionamentos)
+
+### Ações em Massa
+
+**Botões disponíveis**:
+- **Selecionar todos**: Marca todos os checkboxes visíveis
+- **Nenhum**: Desmarca todos
+- **Inverter seleção**: Inverte estado de cada checkbox
+
+**Atalhos de navegação** (painel Posicionamentos):
+- **Expandir todos**: Abre todos os editores de posição
+- **Fechar todos**: Colapsa todos os cards
+
+## Segurança e Validação
+
+### Proteções Implementadas
+
+<CardGrid>
+  <Card title="Nonces" icon="approve-check">
+    Cada endpoint AJAX tem nonce específico validado no servidor
+  </Card>
+  
+  <Card title="Capabilities" icon="shield">
+    Requer `manage_options` ou `edit_products` conforme operação
+  </Card>
+  
+  <Card title="Sanitização" icon="warning">
+    Todos os inputs passam por sanitização rigorosa
+  </Card>
+  
+  <Card title="Whitelist" icon="list-format">
+    Apenas meta keys permitidas podem ser copiadas
+  </Card>
+</CardGrid>
+
+### Backups Automáticos
+
+No modo **Atualizar**, antes de sobrescrever qualquer meta:
+```
+_wapf_fieldgroup       →  _backup_wapf_fieldgroup_1699564823
+_wapflcp_rows          →  _backup_wapflcp_rows_1699564823
+```
+
+Timestamp Unix permite identificar quando o backup foi criado.
+
+## Suporte a Locale (PT-BR / EN-US)
+
+### Formato Decimal
+
+O plugin reconhece ambos os formatos:
+
+| Formato | Exemplo | Conversão |
+|---------|---------|-----------|
+| PT-BR (vírgula) | `41,111` | `41.111` |
+| EN-US (ponto) | `41.111` | `41.111` |
+| Misto | `1.234,56` | `1234.56` |
+
+### Preservação de Formato
+
+Ao aplicar transformações, o plugin:
+1. Detecta formato original (vírgula/ponto)
+2. Detecta precisão (casas decimais)
+3. Aplica cálculo
+4. Formata resultado no mesmo padrão
+
+**Exemplo**:
+```
+Valor original:  41,111  (PT-BR, 3 casas)
+Deslocamento:    -0,5
+Resultado:       40,611  (formato preservado)
+```
+
+[Documentação técnica de locale →](/funcionalidades/suporte-locale/)
+
+## Limitações Conhecidas
+
+### Preview Limitado
+
+- Renderiza apenas **Linha 0** (campo "Texto")
+- Não gera imagem final do produto
+- Serve para validação de posicionamento, não visualização completa
+
+### Edição Restrita
+
+- Não é possível alterar **tamanho, rotação, cores ou tipografia**
+- Essas propriedades são sempre herdadas do produto base
+- Garantia de consistência visual
+
+### Compatibilidade
+
+- Requer plugin de personalização compatível (WAPF ou similar)
+- Estrutura de metadados deve seguir padrão esperado
+- Testado com WooCommerce 6.0+
+
+## Próximos Passos
+
+<CardGrid>
+  <Card title="Guias Práticos" icon="open-book">
+    [Ver todos os guias →](/guias/criando-produtos/)
+  </Card>
+  
+  <Card title="Referência API" icon="information">
+    [Endpoints AJAX →](/referencia/endpoints-ajax/)
+  </Card>
+  
+  <Card title="Arquitetura" icon="puzzle">
+    [Entender o sistema →](/arquitetura/visao-geral/)
+  </Card>
+</CardGrid>
