@@ -1,75 +1,71 @@
 ---
-title: WC Product Creator
-description: Plugin WordPress para criação e atualização em lote de produtos WooCommerce customizáveis
+title: Bem-vindo ao Criador de Produtos
+description: Crie novos produtos personalizados de forma rápida e fácil
 template: splash
 hero:
-  tagline: Simplifique a gestão de produtos customizáveis com ferramentas visuais e automação inteligente
+  tagline: Transforme suas bolsas base em novos produtos com apenas alguns cliques
   actions:
-    - text: Começar Agora
-      link: /inicio/instalacao/
+    - text: Começar agora
+      link: /tutoriais/criar-primeira-bolsa/
       icon: right-arrow
       variant: primary
-    - text: Ver no GitHub
-      link: https://github.com/4ntigona/wc-product-creator
-      icon: external
-      variant: minimal
+    - text: Ver o que o plugin faz
+      link: /comecando/o-que-faz/
+      icon: information
+      variant: secondary
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Recursos Principais
+## O que você pode fazer?
 
 <CardGrid stagger>
-  <Card title="Criação em Lote" icon="add-document">
-    Crie múltiplos produtos a partir de um template base, copiando campos de personalização e dados configuráveis de forma automática.
+  <Card title="✨ Criar Novos Produtos" icon="star">
+    Crie uma bolsa nova copiando todas as opções de gravação de uma bolsa existente. Perfeito para criar variações de cores ou tamanhos.
   </Card>
-  
-  <Card title="Editor Visual de Posições" icon="pencil">
-    Interface intuitiva para ajustar posicionamento (X/Y) de elementos, preservando estilos e cores do produto original.
+
+  <Card title="🔄 Atualizar Várias Bolsas" icon="refresh">
+    Atualize várias bolsas de uma só vez quando você mudar as opções de gravação do seu modelo base.
   </Card>
-  
-  <Card title="Preview em Tempo Real" icon="magnifier">
-    Visualize o layout antes de aplicar alterações, com renderização client-side das posições dos elementos.
+
+  <Card title="📐 Ajustar Posições" icon="setting">
+    Mova as gravações para o lugar certo em cada bolsa sem precisar refazer tudo do zero.
   </Card>
-  
-  <Card title="Ajuste Global" icon="setting">
-    Aplique deslocamentos em massa a todos os campos simultaneamente, com suporte a formato decimal PT-BR (vírgula).
-  </Card>
-  
-  <Card title="Atualização em Massa" icon="document">
-    Atualize múltiplos produtos existentes de uma só vez, mantendo backups automáticos das configurações anteriores.
-  </Card>
-  
-  <Card title="Busca e Filtros" icon="magnifier">
-    Encontre rapidamente campos e elementos com sistema de busca integrado e seleção em massa.
+
+  <Card title="👁️ Visualizar Antes" icon="preview">
+    Veja como as gravações vão ficar posicionadas na bolsa antes de aplicar as mudanças.
   </Card>
 </CardGrid>
 
-## Como Funciona
+## Por onde começar?
 
-O WC Product Creator foi desenvolvido para trabalhar com produtos WooCommerce que utilizam plugins de personalização (como WAPF - WooCommerce Advanced Product Fields). O fluxo de trabalho é simples e direto:
+Escolha o que você precisa fazer:
 
-1. **Selecione o Produto Base**: Escolha um produto existente que servirá como modelo
-2. **Escolha os Campos**: Selecione quais campos e posicionamentos deseja copiar
-3. **Ajuste as Posições**: Use o editor visual para modificar coordenadas X e Y
-4. **Visualize**: Confira o preview antes de aplicar
-5. **Execute**: Crie novos produtos ou atualize produtos existentes em lote
+<CardGrid>
+  <Card title="Criar minha primeira bolsa" icon="rocket">
+    Siga o passo a passo para criar seu primeiro produto usando o plugin.
+    
+    [Ir para o tutorial →](/tutoriais/criar-primeira-bolsa/)
+  </Card>
 
-## Casos de Uso
+  <Card title="Atualizar bolsas existentes" icon="add-document">
+    Aprenda a atualizar várias bolsas quando mudar as opções de gravação.
+    
+    [Ver como fazer →](/tutoriais/atualizar-varias/)
+  </Card>
 
-### Linhas de Produtos Personalizáveis
+  <Card title="Ajustar posições" icon="pencil">
+    Descubra como mover as gravações para o lugar certo em cada bolsa.
+    
+    [Aprender a ajustar →](/tutoriais/mudar-posicoes/)
+  </Card>
+</CardGrid>
 
-Você tem uma linha de camisetas personalizáveis e precisa criar variações para diferentes cores de tecido, mantendo as mesmas áreas de personalização (nome, número, logo).
+## Precisa de ajuda?
 
-**Solução**: Use um produto base como template e crie rapidamente todas as variações, ajustando apenas as posições conforme necessário para cada cor de fundo.
-
-### Atualização de Layout
-
-Após um redesign das áreas de impressão, você precisa atualizar o posicionamento dos campos em dezenas de produtos.
-
-**Solução**: Configure as novas posições em um produto base e aplique as mudanças em massa para todos os produtos da categoria.
-
-### Ajustes Finos de Posição
+- 📖 [Perguntas frequentes](/ajuda/perguntas-frequentes/) - Respostas para as dúvidas mais comuns
+- 🔧 [Problemas comuns](/ajuda/problemas-comuns/) - Soluções para erros que podem acontecer
+- 💡 [Dicas práticas](/dicas/quando-usar-cada-modo/) - Aprenda quando usar cada função
 
 Pequenos ajustes de alinhamento são necessários em todos os produtos após mudança no template de impressão.
 

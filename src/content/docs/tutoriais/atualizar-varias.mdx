@@ -1,0 +1,122 @@
+---
+title: Atualizar várias bolsas de uma vez
+description: Aprenda a atualizar as opções de gravação de múltiplas bolsas usando uma bolsa base como referência
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Quando você muda as opções de gravação em uma bolsa e precisa aplicar essas mudanças em várias outras bolsas, não precisa fazer uma por uma. Você pode atualizar todas de uma vez!
+
+## O que você vai fazer
+
+Vamos usar uma bolsa como modelo e aplicar as mudanças de gravação em várias outras bolsas ao mesmo tempo. É como atualizar todas as páginas de um livro com a mesma correção.
+
+:::tip[Quando usar?]
+Use esse método quando você:
+- Mudou as opções de gravação na bolsa modelo
+- Ajustou posições na bolsa modelo
+- Quer aplicar essas mudanças em várias bolsas de uma vez
+:::
+
+## Passo a passo
+
+<Steps>
+
+1. **Acesse o Criador de Produtos**
+   
+   No painel do WordPress, clique em "Criar Produto" no menu lateral.
+
+2. **Mude para o modo "Atualizar"**
+   
+   Na tela inicial, clique na opção "Atualizar produtos existentes".
+   
+   ![Modo atualizar](/screenshots/10-modo-atualizar.png)
+   
+   Você vai ver que os campos mudaram. Agora tem um lugar para colocar os IDs das bolsas que você quer atualizar.
+
+3. **Escolha a bolsa modelo**
+   
+   No campo "Produto Base", selecione a bolsa que tem as configurações corretas (a bolsa que serve de modelo).
+   
+   Por exemplo: "ID Bags - Base (15710)".
+
+4. **Carregue o conteúdo**
+   
+   Clique em "Carregar conteúdo do produto base" e aguarde carregar.
+   
+   As duas caixas vão aparecer mostrando o que existe na bolsa modelo.
+
+5. **Informe quais bolsas quer atualizar**
+   
+   No campo "IDs dos produtos alvo", digite os números (IDs) das bolsas que você quer atualizar. Separe com vírgula.
+   
+   Por exemplo: `123, 456, 789, 1011`
+   
+   :::tip[Como achar o ID?]
+   O ID da bolsa aparece na URL quando você edita o produto. Exemplo:
+   ```
+   /wp-admin/post.php?post=123&action=edit
+   ```
+   O número `123` é o ID.
+   :::
+
+6. **Escolha o que quer atualizar**
+   
+   Você pode escolher atualizar:
+   - Só as opções de personalização
+   - Só os posicionamentos
+   - Ou ambos (padrão)
+   
+   Use as caixinhas de seleção para marcar/desmarcar itens específicos se precisar.
+
+7. **Clique em Aplicar**
+   
+   Role até o final e clique em "Aplicar".
+   
+   ![Botão aplicar](/screenshots/12-botao-aplicar.png)
+   
+   O sistema vai processar todas as bolsas. Pode demorar alguns segundos se forem muitas.
+
+8. **Confira o resultado**
+   
+   Quando terminar, você vai ver uma mensagem mostrando quantas bolsas foram atualizadas.
+   
+   :::note[Backup automático]
+   Não se preocupe! O plugin faz um backup automático das configurações antigas antes de atualizar. Se precisar voltar atrás, o backup fica salvo no produto.
+   :::
+
+</Steps>
+
+## Exemplo prático
+
+**Situação**: Você tem 10 bolsas com gravações. Decidiu mudar a posição do nome para ficar 2cm mais à esquerda em todas.
+
+**Solução**:
+1. Ajuste a posição na bolsa base
+2. Use o modo "Atualizar" 
+3. Coloque os IDs das 10 bolsas separados por vírgula
+4. Marque só a opção de "Posicionamentos"
+5. Clique em Aplicar
+6. Pronto! Todas as 10 bolsas foram atualizadas
+
+## Precauções importantes
+
+:::caution[Atenção]
+- **Backup**: Embora o plugin faça backup automático, é bom ter um backup do site antes de atualizar muitas bolsas
+- **Teste primeiro**: Atualize 1 ou 2 bolsas primeiro para ver se ficou como você quer
+- **IDs corretos**: Confira se os IDs estão certos. Se colocar um ID errado, aquela bolsa vai ser atualizada também
+:::
+
+## Dúvidas comuns
+
+**Posso atualizar 50 bolsas de uma vez?**  
+Tecnicamente sim, mas é melhor fazer em lotes menores (10-20) para não sobrecarregar o servidor.
+
+**O que acontece com as imagens das bolsas?**  
+As imagens NÃO são alteradas. Só as configurações de gravação são atualizadas.
+
+**Posso desfazer se der errado?**  
+Você pode restaurar manualmente usando o backup que foi salvo no produto, mas é um processo técnico. Por isso é importante testar antes!
+
+**E se eu quiser atualizar só alguns tipos de gravação?**  
+Use os filtros e caixas de seleção para escolher exatamente o que quer atualizar. Por exemplo: só gravações de texto, ou só símbolos.

@@ -1,0 +1,204 @@
+---
+title: Perguntas frequentes
+description: Respostas para as dúvidas mais comuns sobre o plugin
+---
+
+## Sobre o plugin
+
+### O plugin é grátis?
+
+Sim, o plugin é gratuito. Ele foi desenvolvido especificamente para uso interno e está disponível para você usar sem custo.
+
+### Funciona com qualquer tema do WordPress?
+
+Sim! O plugin funciona com qualquer tema porque ele opera no painel administrativo do WordPress, não no front-end do site.
+
+### Preciso saber programar para usar?
+
+Não! O plugin foi feito justamente para quem NÃO é programador. A interface é visual e simples de usar.
+
+### Funciona com produtos simples e variáveis?
+
+O plugin foi testado principalmente com produtos simples. Para produtos variáveis, teste primeiro em 1 ou 2 produtos antes de usar em massa.
+
+## Sobre criar produtos
+
+### Posso criar quantos produtos quiser?
+
+Sim, não há limite. Mas lembre-se: você cria um produto por vez no modo "Criar".
+
+### A bolsa criada herda o preço da bolsa base?
+
+Não. O produto novo vem sem preço definido. Você precisa configurar o preço editando o produto após criar.
+
+### E as categorias e tags?
+
+Não são copiadas automaticamente. Você adiciona categorias e tags editando o produto criado no WooCommerce.
+
+### Posso criar um produto sem escolher imagem?
+
+Tecnicamente sim, mas o produto ficará sem imagem. É melhor sempre escolher uma imagem ao criar.
+
+### O que mais NÃO é copiado?
+
+Não são copiados:
+- Preço
+- Estoque
+- Descrição do produto
+- Categorias
+- Tags
+- Avaliações
+- Vendas anteriores
+
+São copiados apenas os campos de personalização e seus posicionamentos.
+
+## Sobre atualizar produtos
+
+### Posso atualizar 100 bolsas de uma vez?
+
+Tecnicamente sim, mas é arriscado. Recomendamos fazer em lotes de 10-20 produtos e testar antes em 1 ou 2.
+
+### Se eu atualizar, posso voltar atrás?
+
+O plugin faz um backup automático, mas restaurar é um processo técnico. Por isso é importante testar antes de atualizar muitas bolsas.
+
+### O que acontece se eu colocar um ID errado?
+
+Se o ID não existe, ele é ignorado. Se existe mas você colocou por engano, aquela bolsa será atualizada também.
+
+### Atualizar muda o preço ou estoque?
+
+Não! Atualizar só mexe nos campos de personalização e posicionamentos. Preço, estoque, descrição etc. não são tocados.
+
+### Posso atualizar produtos de categorias diferentes?
+
+Sim, não importa a categoria. O plugin usa apenas os IDs que você fornecer.
+
+## Sobre posições
+
+### O que são esses números X e Y?
+
+São coordenadas. Pense como um mapa:
+- **X** = horizontal (da esquerda para a direita)
+- **Y** = vertical (de cima para baixo)
+
+Quanto maior o número, mais para direita/baixo a gravação fica.
+
+### Posso usar valores negativos?
+
+Não é recomendado. Valores negativos podem fazer a gravação aparecer fora da bolsa.
+
+### Por que uso vírgula e não ponto?
+
+O plugin foi configurado para aceitar o formato brasileiro (43,50). Se digitar com ponto, pode não funcionar direito.
+
+### Posso mudar tamanho ou cor das gravações?
+
+Não. O plugin só permite ajustar **posições** (X e Y). Cores, tamanhos, fontes e estilos são mantidos do produto original.
+
+### O que é offset global?
+
+É um atalho para mover TODAS as gravações na mesma direção e mesma distância. Exemplo: mover tudo 2mm para a direita.
+
+## Sobre o preview
+
+### O preview mostra como vai ficar no site?
+
+Não exatamente. O preview mostra apenas **onde** cada gravação vai ficar (posições). Não mostra o texto/símbolo final que o cliente vai ver.
+
+### Por que aparecem só retângulos?
+
+Os retângulos representam as áreas de cada gravação. É só para você ver se está tudo alinhado.
+
+### O preview está feio, o resultado final também vai ficar?
+
+Não! O preview é apenas uma referência visual simples. O resultado final no site é renderizado corretamente com todas as cores e detalhes.
+
+### Posso gerar preview sem aplicar?
+
+Sim! O preview não muda nada. Você pode gerar, ver, ajustar e gerar de novo quantas vezes quiser.
+
+## Sobre segurança e backups
+
+### Meus dados estão seguros?
+
+Sim. O plugin só mexe em produtos que você especificamente indicar. Ele não acessa ou modifica nada além disso.
+
+### O que é o backup automático?
+
+Quando você atualiza produtos, o plugin salva as configurações antigas em um campo especial. Se der algo errado, é possível restaurar (processo técnico).
+
+### Onde fica esse backup?
+
+Fica salvo dentro do próprio produto, em um campo oculto. Não aparece para os clientes, só para administradores.
+
+### Por quanto tempo o backup fica salvo?
+
+Indefinidamente, até você deletar o produto ou fazer uma nova atualização (que cria um backup novo).
+
+## Problemas e erros
+
+### Fiz algo errado, como desfazer?
+
+Depende:
+- **Criar**: Delete o produto criado
+- **Atualizar**: Restaure o backup (processo técnico) ou ajuste manualmente
+
+Por isso sempre recomendamos testar primeiro!
+
+### O plugin para de funcionar às vezes
+
+Pode ser:
+- Muitos produtos sendo processados de uma vez
+- Servidor sobrecarregado
+- Conexão instável
+
+Tente com menos produtos por vez ou em outro horário.
+
+### Dá erro mas não sei o que é
+
+Veja a página de [Problemas Comuns](/ajuda/problemas-comuns/) para soluções dos erros mais frequentes.
+
+## Uso avançado
+
+### Posso usar o plugin via código/API?
+
+O plugin tem as funções PHP disponíveis, mas não há API pública documentada. É focado no uso via interface visual.
+
+### Posso automatizar criação de produtos?
+
+Não nativamente. O plugin é focado em uso manual com interface visual.
+
+### Funciona com outros plugins além do WAPF?
+
+Foi desenvolvido para WAPF especificamente, mas pode funcionar com plugins similares. Teste antes!
+
+### Posso modificar o plugin?
+
+Sim, o código é aberto. Mas modificações por sua conta podem quebrar funcionalidades.
+
+## Integração e compatibilidade
+
+### Funciona com multisite?
+
+Não foi testado em ambiente multisite. Use por sua conta e risco.
+
+### Funciona com WPML (site multilíngue)?
+
+Não foi testado com WPML. Pode haver problemas ao copiar produtos em diferentes idiomas.
+
+### Funciona com outros plugins de personalização?
+
+Foi feito para WAPF. Outros plugins podem funcionar se usarem estrutura similar, mas teste antes!
+
+## Ainda tem dúvidas?
+
+Se sua dúvida não está aqui:
+
+1. Veja os [tutoriais](/tutoriais/criar-primeira-bolsa/) com exemplos práticos
+2. Confira a lista de [problemas comuns](/ajuda/problemas-comuns/)
+3. Entre em contato com o suporte técnico
+
+:::tip[Dica]
+A maioria das dúvidas se resolve testando! Crie um produto de teste e experimente sem medo. Você sempre pode deletar depois.
+:::

@@ -1,0 +1,116 @@
+---
+title: Criar sua primeira bolsa
+description: Aprenda a criar um novo produto copiando as opções de gravação de uma bolsa existente
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Neste tutorial você vai aprender a criar uma nova bolsa usando uma bolsa existente como base. É como fazer uma cópia, mas você pode dar um nome diferente e usar outra imagem.
+
+## O que você vai fazer
+
+Vamos criar uma nova bolsa chamada "ID Bags - Vermelha" copiando todas as opções de gravação da "ID Bags - Preta". No final, você terá dois produtos: o original e a cópia nova.
+
+:::tip[Quando usar?]
+Use esse método quando você tem uma bolsa pronta com todas as gravações configuradas e quer criar uma nova versão (outra cor, outro tamanho) sem ter que refazer tudo.
+:::
+
+## Passo a passo
+
+<Steps>
+
+1. **Acesse o Criador de Produtos**
+   
+   No painel do WordPress, procure no menu lateral por "Criar Produto" e clique.
+   
+   ![Interface inicial do plugin](/screenshots/01-interface-inicial.png)
+   
+   Você vai ver uma tela com duas opções: "Criar novo produto" e "Atualizar produtos existentes". A opção "Criar novo produto" já vem selecionada.
+
+2. **Escolha a bolsa base**
+   
+   No campo "Produto Base", selecione a bolsa que tem as gravações que você quer copiar. Por exemplo: "ID Bags - Preta (15710)".
+   
+   ![Selecionando o produto base](/screenshots/03-produto-base.png)
+   
+   :::note[Importante]
+   O número entre parênteses (15710) é só uma referência interna. Você não precisa decorá-lo.
+   :::
+
+3. **Carregue o conteúdo**
+   
+   Clique no botão "Carregar conteúdo do produto base". Aguarde alguns segundos.
+   
+   ![Conteúdo carregado](/screenshots/04-conteudo-carregado.png)
+   
+   Você vai ver duas caixas aparecerem:
+   - **Opções de personalização**: São os campos que o cliente preenche (nome, texto, cor, etc.)
+   - **Posicionamentos da personalização**: São os lugares onde cada gravação aparece na bolsa
+
+4. **Dê um nome para a nova bolsa**
+   
+   No campo "Nome do novo produto", escreva o nome que você quer. Por exemplo: "ID Bags - Vermelha".
+   
+   ![Preenchendo o nome](/screenshots/02-modo-criar.png)
+
+5. **Escolha a imagem da nova bolsa**
+   
+   Clique em "Selecionar imagem" e escolha a foto da bolsa vermelha que está na sua biblioteca de mídia.
+   
+   :::tip[Dica]
+   Se você ainda não tem a foto, pode adicionar depois editando o produto criado.
+   :::
+
+6. **Revise o que será copiado**
+   
+   Por padrão, **tudo** está selecionado (todas as opções e posições). Se quiser desmarcar alguma coisa:
+   
+   - Use os botões "Selecionar todos" / "Nenhum" / "Inverter seleção"
+   - Ou clique nas caixinhas individualmente
+   
+   ![Grid de opções](/screenshots/05-fields-grid.png)
+   
+   :::caution[Atenção]
+   Se você desmarcar alguma opção de gravação, ela não vai aparecer na bolsa nova.
+   :::
+
+7. **Crie a nova bolsa**
+   
+   Role a página até o final e clique no botão verde "Criar Novo Produto".
+   
+   ![Botão criar](/screenshots/12-botao-aplicar.png)
+   
+   Aguarde até aparecer a mensagem de sucesso. Pode levar alguns segundos.
+
+8. **Pronto!**
+   
+   Você será levado automaticamente para a página de edição da nova bolsa. Lá você pode:
+   
+   - Ajustar o preço
+   - Adicionar descrição
+   - Configurar outras opções do WooCommerce
+   - Publicar o produto
+
+</Steps>
+
+## E agora?
+
+Agora que você criou sua primeira bolsa, você pode:
+
+- **[Ajustar as posições](/tutoriais/mudar-posicoes/)** das gravações se precisar mover alguma coisa
+- **[Ver o preview](/tutoriais/usar-preview/)** antes de publicar para conferir como ficou
+- **[Criar mais variações](/dicas/quando-usar-cada-modo/)** usando a mesma técnica
+
+## Dúvidas comuns
+
+**Posso criar várias bolsas de uma vez?**  
+Não. Para criar, você faz uma por vez. Mas você pode [atualizar várias bolsas](/tutoriais/atualizar-varias/) de uma vez se elas já existirem.
+
+**A imagem da bolsa base foi copiada também?**  
+Não. Por isso você precisa escolher uma nova imagem no passo 5. Cada bolsa tem sua própria foto.
+
+**E se eu errar alguma coisa?**  
+Não tem problema! Você pode editar a bolsa criada normalmente pelo WordPress, ou até deletar e fazer de novo.
+
+**As cores das gravações também foram copiadas?**  
+Sim! Tudo relacionado às gravações é copiado: posições, cores, tamanhos, fontes, etc. Você não precisa configurar nada disso de novo.

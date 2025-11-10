@@ -1,0 +1,145 @@
+---
+title: Primeiro acesso
+description: Como encontrar e usar o plugin pela primeira vez
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Este guia vai te mostrar onde encontrar o plugin e como fazer seu primeiro acesso.
+
+## Encontrando o plugin
+
+<Steps>
+
+1. **Entre no painel do WordPress**
+   
+   Acesse o endereço do seu site seguido de `/wp-admin`. Por exemplo:
+   ```
+   https://seusite.com.br/wp-admin
+   ```
+   
+   Faça login com seu usuário e senha de Administrador.
+
+2. **Procure no menu lateral**
+   
+   No menu lateral esquerdo do WordPress, procure por um item chamado **"Criar Produto"**.
+   
+   Ele tem um ícone de estrela ⭐ ao lado.
+   
+   ![Menu Criar Produto](/screenshots/01-interface-inicial.png)
+
+3. **Clique em "Criar Produto"**
+   
+   Quando você clicar, vai abrir a tela principal do plugin.
+
+</Steps>
+
+## Entendendo a tela inicial
+
+Na primeira vez que você abre o plugin, você vai ver:
+
+### Opções no topo
+
+Duas opções de modo:
+- **Criar novo produto** (já vem selecionada)
+- **Atualizar produtos existentes**
+
+:::tip[Qual escolher?]
+- Use "Criar" quando quiser fazer uma bolsa nova
+- Use "Atualizar" quando quiser modificar bolsas que já existem
+:::
+
+### Campos principais
+
+- **Produto Base**: Lista com todos os seus produtos
+- **Botão "Carregar conteúdo"**: Carrega as configurações do produto que você escolheu
+
+### O que você NÃO vai ver (ainda)
+
+As caixas com os campos e posições só aparecem **depois** que você:
+1. Escolher um produto base
+2. Clicar em "Carregar conteúdo do produto base"
+
+## Teste rápido
+
+Vamos fazer um teste para você se familiarizar:
+
+<Steps>
+
+1. **Escolha qualquer bolsa**
+   
+   No campo "Produto Base", selecione qualquer bolsa que você já tenha configurada.
+
+2. **Clique em "Carregar conteúdo"**
+   
+   Aguarde alguns segundos. Você vai ver duas caixas aparecerem:
+   - Opções de personalização
+   - Posicionamentos da personalização
+
+3. **Explore**
+   
+   Role a página e veja os cards (cartões) que aparecem. Cada um representa uma opção ou posição de gravação.
+   
+   Pode clicar nos cards para expandi-los e ver os detalhes.
+
+4. **Não precisa fazer nada ainda**
+   
+   Isso foi só para você conhecer a interface. Pode fechar a página.
+
+</Steps>
+
+## Problemas no primeiro acesso?
+
+### "Não vejo o menu Criar Produto"
+
+**Causa**: Você não está logado como Administrador.
+
+**Solução**: 
+- Peça ao administrador do site para te dar permissão
+- Ou faça login com uma conta de Administrador
+
+### "Não tem nada na lista de produtos"
+
+**Causa**: Você não tem produtos cadastrados no WooCommerce.
+
+**Solução**:
+- Crie pelo menos um produto no WooCommerce primeiro
+- Configure os campos de personalização nele
+- Depois volte ao plugin
+
+### "Cliquei em Carregar e não apareceu nada"
+
+**Causa**: O produto escolhido não tem campos de personalização configurados.
+
+**Solução**:
+- Escolha outro produto que tenha campos WAPF configurados
+- Ou configure campos no produto escolhido antes
+
+### "Deu erro ao carregar"
+
+**Causa**: Pode ser um problema temporário de conexão.
+
+**Solução**:
+- Recarregue a página (F5)
+- Tente de novo
+- Se continuar, verifique se está tudo atualizado (WordPress, WooCommerce, plugins)
+
+## Navegação básica
+
+Agora que você já acessou, saiba que:
+
+- **Você pode sair e voltar**: Não precisa terminar tudo de uma vez
+- **Nada é salvo automaticamente**: Só quando você clicar em "Criar" ou "Aplicar"
+- **Pode testar à vontade**: Explorar não muda nada nos seus produtos
+
+## Próximos passos
+
+Agora que você já conhece a interface:
+
+1. [Crie sua primeira bolsa](/tutoriais/criar-primeira-bolsa/) - Tutorial passo a passo
+2. [Entenda quando usar cada modo](/dicas/quando-usar-cada-modo/) - Dicas práticas
+3. [Veja problemas comuns](/ajuda/problemas-comuns/) - Soluções para erros
+
+:::tip[Dica]
+Marque esta documentação nos favoritos! Você vai consultar bastante no começo.
+:::

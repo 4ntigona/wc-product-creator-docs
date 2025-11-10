@@ -1,0 +1,130 @@
+---
+title: Visualizar antes de aplicar (Preview)
+description: Veja como as gravações vão ficar na bolsa antes de criar ou atualizar produtos
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Antes de criar uma bolsa nova ou atualizar várias bolsas, você pode ver um preview de como as gravações vão ficar posicionadas. É como uma "prévia" antes de confirmar.
+
+## Por que usar o preview?
+
+- Ver se as posições estão certas antes de aplicar
+- Conferir se nada vai ficar cortado ou fora da bolsa
+- Economizar tempo evitando ter que corrigir depois
+- Ter certeza de que está tudo OK antes de atualizar várias bolsas
+
+:::tip[Quando usar?]
+Use o preview sempre que você:
+- Ajustar posições manualmente
+- Usar o offset global
+- Criar uma bolsa com imagem diferente da base
+:::
+
+## Como gerar o preview
+
+<Steps>
+
+1. **Configure tudo primeiro**
+   
+   Antes de pedir o preview, faça todas as configurações:
+   - Escolha a bolsa base
+   - Carregue o conteúdo
+   - Ajuste as posições se necessário
+   - Marque/desmarque as opções que quer
+
+2. **Clique em "Gerar prévia"**
+   
+   Procure pelo botão "✨ Gerar prévia" e clique nele.
+   
+   ![Botão de preview](/screenshots/11-preview.png)
+   
+   Aguarde alguns segundos enquanto o sistema processa.
+
+3. **Veja o resultado**
+   
+   Uma imagem vai aparecer mostrando:
+   - A foto da bolsa
+   - Retângulos coloridos mostrando onde cada gravação vai ficar
+   - Os tamanhos aproximados de cada área
+   
+   ![Exemplo de preview](/screenshots/11-preview.png)
+
+</Steps>
+
+## Entendendo o preview
+
+O que você vê no preview:
+
+- **Retângulos coloridos**: Cada cor representa uma gravação diferente
+- **Posição**: Onde o retângulo está é onde a gravação vai aparecer
+- **Tamanho**: O tamanho do retângulo mostra a área da gravação
+
+:::note[Importante]
+O preview mostra apenas as **posições** das gravações, não o conteúdo final. Você vai ver retângulos, não o texto ou símbolo real que o cliente vai escolher.
+:::
+
+## Checklist antes de aplicar
+
+Ao ver o preview, confira:
+
+- ✅ Todas as gravações estão dentro da área visível da bolsa?
+- ✅ Nenhuma gravação está sobrepondo outra?
+- ✅ Os tamanhos parecem proporcionais?
+- ✅ As posições estão onde você esperava?
+
+Se algo não está certo, volte e ajuste as posições antes de aplicar.
+
+## Preview não está mostrando?
+
+Se o preview não aparecer, pode ser:
+
+1. **Você não tem imagem na bolsa base**: O preview precisa de uma imagem de produto para funcionar
+2. **Erro de permissão**: Pode ser um problema temporário. Tente recarregar a página
+3. **Navegador bloqueou**: Alguns bloqueadores de anúncios podem interferir. Tente desabilitar temporariamente
+
+## Diferença entre preview e resultado final
+
+**Preview**:
+- Mostra retângulos coloridos
+- É só para ver posições
+- Rápido de gerar
+
+**Resultado final** (no site):
+- Mostra o texto/símbolo real
+- Com as cores escolhidas pelo cliente
+- Com a fonte e tamanho reais
+
+O preview é só uma "planta baixa" para você ver se está tudo alinhado!
+
+## Exemplo de uso
+
+**Situação**: Você ajustou 15 gravações usando offset global e quer ter certeza antes de aplicar em 20 bolsas.
+
+**O que fazer**:
+1. Configure tudo no modo "Atualizar"
+2. Clique em "Gerar prévia"
+3. Veja se todas as 15 gravações estão posicionadas corretamente
+4. Se sim, aplique em todas as 20 bolsas com confiança
+5. Se não, ajuste e gere o preview de novo até ficar bom
+
+## Dicas importantes
+
+:::tip[Dica profissional]
+Sempre gere o preview antes de atualizar muitas bolsas. Corrigir 1 bolsa é fácil, corrigir 50 bolsas dá muito trabalho!
+:::
+
+:::caution[Resolução da imagem]
+Se a imagem da bolsa base estiver com qualidade ruim, o preview também vai ficar ruim. Mas isso não afeta o resultado final no site.
+:::
+
+## E depois do preview?
+
+Se está tudo certo:
+- **Modo Criar**: Clique em "Criar Novo Produto"
+- **Modo Atualizar**: Clique em "Aplicar"
+
+Se precisa ajustar:
+- Volte e mude as posições
+- Gere o preview novamente
+- Repita até ficar perfeito

@@ -1,0 +1,159 @@
+---
+title: Ajustar posições das gravações
+description: Aprenda a mover as gravações para o lugar certo em cada bolsa
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+Às vezes você precisa mover uma gravação um pouquinho para a direita, para cima, ou para qualquer direção. O plugin permite fazer isso de forma simples, sem precisar refazer toda a configuração.
+
+## O que são posições?
+
+Cada gravação tem duas coordenadas:
+- **X (horizontal)**: Quanto mais para a direita, maior o número
+- **Y (vertical)**: Quanto mais para baixo, maior o número
+
+É como um mapa: X é de um lado para o outro, Y é de cima para baixo.
+
+## Ajustar uma gravação específica
+
+<Steps>
+
+1. **Carregue o conteúdo da bolsa**
+   
+   Escolha a bolsa base e clique em "Carregar conteúdo do produto base".
+
+2. **Encontre a gravação na lista**
+   
+   Role até a seção "Posicionamentos da personalização". Você vai ver cards (cartões) com o nome de cada gravação.
+   
+   ![Grid de posicionamentos](/screenshots/06-rows-grid.png)
+
+3. **Expanda o card da gravação**
+   
+   Clique no card da gravação que você quer ajustar. Ele vai abrir e mostrar os campos de posição.
+   
+   ![Editor de posição](/screenshots/07-editor-posicao.png)
+
+4. **Ajuste os valores**
+   
+   Você vai ver dois campos:
+   - **X**: Posição horizontal (exemplo: 43,50)
+   - **Y**: Posição vertical (exemplo: 52,00)
+   
+   :::tip[Unidades]
+   Os valores estão em milímetros. Use vírgula para decimais (ex: 43,50 e não 43.50).
+   :::
+   
+   Para mover:
+   - **Para a direita**: Aumente o X
+   - **Para a esquerda**: Diminua o X
+   - **Para baixo**: Aumente o Y
+   - **Para cima**: Diminua o Y
+
+5. **Salve a mudança**
+   
+   Os valores são salvos automaticamente quando você digita. Você vai ver que o número original fica riscado e o novo aparece embaixo.
+
+6. **Aplique a mudança**
+   
+   Role até o final e clique em "Criar Novo Produto" ou "Aplicar" dependendo do modo que você está.
+
+</Steps>
+
+## Ajustar TODAS as gravações de uma vez
+
+Se você precisa mover **todas** as gravações na mesma direção e mesma distância (por exemplo, tudo 5mm para a direita), existe um jeito mais rápido:
+
+<Steps>
+
+1. **Abra o painel "Offset Global"**
+   
+   Procure pela seção "Ajuste Global (Offset)" e expanda.
+   
+   ![Painel de offset global](/screenshots/08-offset-global.png)
+
+2. **Digite o deslocamento**
+   
+   - **Offset X**: Quanto quer mover horizontalmente (ex: -0,5 para mover meio milímetro à esquerda)
+   - **Offset Y**: Quanto quer mover verticalmente (ex: 1,25 para mover um milímetro e meio para baixo)
+   
+   :::note[Números negativos]
+   Use números negativos para mover para a esquerda ou para cima:
+   - X negativo = esquerda
+   - X positivo = direita
+   - Y negativo = cima
+   - Y positivo = baixo
+   :::
+
+3. **Clique em "Aplicar Offset Global"**
+   
+   Todas as gravações vão ser ajustadas automaticamente!
+   
+   ![Offset aplicado](/screenshots/09-offset-aplicado.png)
+   
+   Você vai ver os novos valores aparecerem em todos os cards.
+
+4. **Revise e aplique**
+   
+   Confira se ficou como você queria e clique em "Criar Novo Produto" ou "Aplicar".
+
+</Steps>
+
+## Exemplos práticos
+
+### Exemplo 1: Centralizar um texto
+
+**Problema**: O nome está muito para a esquerda na bolsa.
+
+**Solução**: 
+- Encontre o card "Nome" ou "Texto"
+- Aumente o valor de X em 5 (de 43,50 para 48,50)
+- Aplique
+
+### Exemplo 2: Ajustar tudo após mudar a imagem
+
+**Problema**: Você trocou a foto da bolsa e agora todas as gravações estão desalinhadas.
+
+**Solução**:
+- Use o Offset Global
+- Teste com valores pequenos primeiro (ex: X: 2, Y: -1)
+- Veja o preview
+- Ajuste até ficar bom
+
+### Exemplo 3: Mover apenas símbolos
+
+**Problema**: Os símbolos estão muito em cima, mas os textos estão no lugar certo.
+
+**Solução**:
+- Expanda apenas os cards dos símbolos
+- Ajuste o Y de cada um individualmente (aumente para mover para baixo)
+- Ou use o filtro de busca para mostrar só "símbolo" e ajustar em lote
+
+## Dicas importantes
+
+:::tip[Teste antes de aplicar em muitos produtos]
+- Sempre teste em 1 produto primeiro
+- Use o [preview](/tutoriais/usar-preview/) para ver como vai ficar
+- Só depois aplique em vários produtos
+:::
+
+:::caution[Cuidado com valores muito grandes]
+Se você colocar valores muito altos, a gravação pode sair da área visível da bolsa!
+:::
+
+## Não entendi as coordenadas X e Y
+
+Imagine a bolsa como uma folha de papel milimetrado:
+- O canto superior esquerdo é X=0, Y=0
+- Quando você vai para a direita, X aumenta
+- Quando você vai para baixo, Y aumenta
+
+É como o jogo "Batalha Naval": você precisa de duas coordenadas para achar um ponto!
+
+## E se eu errar?
+
+Não tem problema! Você pode:
+1. Digitar o valor certo novamente
+2. Ou usar o modo "Atualizar" para corrigir depois
+3. Ou editar manualmente o produto no WordPress (mais técnico)

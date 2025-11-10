@@ -1,0 +1,260 @@
+---
+title: Problemas comuns
+description: Soluções para os erros e problemas mais frequentes
+---
+
+Aqui estão os problemas mais comuns que você pode encontrar e como resolver cada um.
+
+## Ao acessar o plugin
+
+### Não vejo o menu "Criar Produto"
+
+**Sintoma**: O menu não aparece na lateral do WordPress.
+
+**Causas possíveis**:
+1. Você não é Administrador
+2. O plugin não está ativo
+
+**Soluções**:
+- Verifique se você está logado como Administrador
+- Vá em **Plugins → Plugins instalados** e confira se "WooCommerce Product Creator" está ativo
+- Se não estiver na lista, o plugin não foi instalado
+
+### Página em branco ao clicar em "Criar Produto"
+
+**Sintoma**: Abre uma página toda branca ou com erro.
+
+**Causa provável**: Conflito com outro plugin ou tema.
+
+**Soluções**:
+1. Recarregue a página (F5)
+2. Limpe o cache do navegador (Ctrl+Shift+Delete)
+3. Tente em outro navegador
+4. Verifique se o WordPress e WooCommerce estão atualizados
+
+## Ao carregar conteúdo
+
+### "Erro ao carregar conteúdo"
+
+**Sintoma**: Mensagem de erro quando clica em "Carregar conteúdo do produto base".
+
+**Causas possíveis**:
+1. O produto não tem campos configurados
+2. Problema de permissão
+3. Problema temporário do servidor
+
+**Soluções**:
+- Verifique se o produto escolhido tem campos WAPF configurados
+- Tente outro produto
+- Recarregue a página e tente novamente
+- Aguarde 1 minuto e tente de novo (pode ser sobrecarga do servidor)
+
+### Carregou mas não apareceu nada
+
+**Sintoma**: O botão funciona mas nenhuma caixa aparece.
+
+**Causa**: O produto realmente não tem conteúdo para copiar.
+
+**Solução**:
+- Escolha um produto que você sabe que tem gravações configuradas
+- Verifique no WooCommerce se o produto tem campos personalizados
+
+### Lista de produtos está vazia
+
+**Sintoma**: Não tem nada para escolher no "Produto Base".
+
+**Causa**: Não há produtos no WooCommerce.
+
+**Solução**:
+- Crie pelo menos um produto no WooCommerce primeiro
+- Configure os campos de personalização nele
+- Depois volte ao plugin
+
+## Ao criar produto
+
+### "Erro ao criar produto"
+
+**Sintoma**: Clicou em "Criar Novo Produto" e deu erro.
+
+**Causas possíveis**:
+1. Não preencheu todos os campos obrigatórios
+2. Não selecionou nenhuma imagem
+3. Problema de permissão
+
+**Soluções**:
+- Confira se preencheu o "Nome do novo produto"
+- Confira se selecionou uma imagem
+- Tente com um nome diferente (pode ter conflito)
+- Verifique sua conexão com a internet
+
+### Produto foi criado mas está estranho
+
+**Sintoma**: O produto foi criado mas falta alguma coisa ou está desconfigurado.
+
+**Causa provável**: Você desmarcou alguma opção sem querer.
+
+**Solução**:
+- Delete o produto criado
+- Volte ao plugin
+- Confira se está tudo marcado nas caixas de seleção
+- Crie novamente
+
+### Criou com a imagem errada
+
+**Sintoma**: O produto tem a imagem do produto base, não a que você escolheu.
+
+**Causa**: Você não selecionou uma imagem nova.
+
+**Solução**:
+- Edite o produto criado manualmente
+- Troque a imagem na edição normal do WooCommerce
+- Ou delete e crie de novo selecionando a imagem certa
+
+## Ao atualizar produtos
+
+### "Erro ao atualizar produtos"
+
+**Sintoma**: Mensagem de erro ao clicar em "Aplicar".
+
+**Causas possíveis**:
+1. ID de produto inválido
+2. Muitos produtos de uma vez
+3. Timeout do servidor
+
+**Soluções**:
+- Confira se os IDs estão corretos (números separados por vírgula)
+- Tente com menos produtos por vez (divida em lotes menores)
+- Aguarde um pouco e tente novamente
+
+### Alguns produtos foram atualizados, outros não
+
+**Sintoma**: Mensagem diz que processou X de Y produtos.
+
+**Causa provável**: Alguns IDs não existem ou têm problema de permissão.
+
+**Solução**:
+- Anote quais IDs deram erro
+- Verifique se esses produtos realmente existem
+- Tente atualizar esses produtos separadamente
+
+### Atualizou mas não mudou nada
+
+**Sintoma**: Diz que atualizou mas as bolsas continuam iguais.
+
+**Causas possíveis**:
+1. Você atualizou com o mesmo produto base
+2. Não fez nenhuma mudança antes de atualizar
+3. Cache do navegador
+
+**Soluções**:
+- Confirme que fez as mudanças no produto base primeiro
+- Limpe o cache (Ctrl+F5)
+- Veja se realmente selecionou os campos certos para atualizar
+
+## Com posições e ajustes
+
+### Mudei o X/Y mas não salvou
+
+**Sintoma**: Digite os valores mas eles voltam ao original.
+
+**Causa**: Pode ter digitado formato errado.
+
+**Solução**:
+- Use vírgula para decimal (43,50 e não 43.50)
+- Não use letras, apenas números
+- Confirme que está no campo certo (X ou Y)
+
+### Offset global não fez nada
+
+**Sintoma**: Cliquei em "Aplicar Offset Global" mas os valores não mudaram.
+
+**Causas possíveis**:
+1. Não digitou valores no offset
+2. Digitou zero
+3. Bug visual (na verdade mudou mas não mostra)
+
+**Soluções**:
+- Digite valores diferentes de zero
+- Use valores pequenos para testar (0,5 ou 1)
+- Recarregue a página e confira se realmente não mudou
+
+### Gravações ficaram fora da bolsa
+
+**Sintoma**: No preview, alguns retângulos estão fora da área da bolsa.
+
+**Causa**: Valores de X/Y muito grandes ou muito negativos.
+
+**Solução**:
+- Ajuste os valores para trazer de volta
+- Use valores menores
+- Se errou muito, recarregue e comece de novo
+
+## Com preview
+
+### Preview não aparece
+
+**Sintoma**: Clica em "Gerar prévia" mas nada acontece.
+
+**Causas possíveis**:
+1. Produto base sem imagem
+2. Bloqueador de anúncios
+3. Problema de carregamento
+
+**Soluções**:
+- Confira se o produto base tem imagem
+- Desative temporariamente bloqueadores de anúncios
+- Tente em modo anônimo/privado do navegador
+- Recarregue a página
+
+### Preview está todo estranho
+
+**Sintoma**: O preview aparece mas está com cores/posições esquisitas.
+
+**Causa provável**: Imagem do produto base com qualidade ruim ou dimensões estranhas.
+
+**Solução**:
+- Não se preocupe, isso não afeta o resultado final
+- O preview é só uma referência
+- Se incomoda muito, troque a imagem do produto base
+
+## Geral
+
+### Tudo está lento
+
+**Sintoma**: O plugin demora muito para fazer qualquer coisa.
+
+**Causas possíveis**:
+1. Muitos produtos sendo processados
+2. Servidor sobrecarregado
+3. Conexão lenta
+
+**Soluções**:
+- Processe menos produtos por vez
+- Tente em um horário diferente
+- Verifique sua conexão com a internet
+- Entre em contato com seu provedor de hospedagem
+
+### Perdi tudo que estava fazendo
+
+**Sintoma**: Saí sem querer e perdi todas as configurações.
+
+**Explicação**: O plugin não salva nada até você clicar em "Criar" ou "Aplicar". Isso é proposital para você poder experimentar sem medo.
+
+**Solução**: 
+- Recomece do início
+- Da próxima vez, complete a operação antes de sair
+
+## Ainda não resolveu?
+
+Se o seu problema não está aqui:
+
+1. Veja a [lista de perguntas frequentes](/ajuda/perguntas-frequentes/)
+2. Entre em contato com o suporte técnico
+3. Descreva o problema com detalhes: o que fez, o que esperava, o que aconteceu
+
+:::tip[Ao pedir ajuda]
+Sempre informe:
+- Qual operação estava fazendo (criar ou atualizar)
+- Mensagem de erro que apareceu (se houver)
+- Print da tela ajuda muito!
+:::

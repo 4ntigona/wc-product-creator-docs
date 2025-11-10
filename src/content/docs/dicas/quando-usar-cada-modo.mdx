@@ -1,0 +1,157 @@
+---
+title: Quando usar cada modo
+description: Entenda quando usar "Criar" e quando usar "Atualizar"
+---
+
+O plugin tem dois modos principais: **Criar** e **Atualizar**. Saber quando usar cada um vai te economizar muito tempo!
+
+## Modo Criar
+
+### Quando usar
+
+Use o modo "Criar novo produto" quando você quer:
+
+✅ **Fazer uma bolsa nova** baseada em uma existente  
+**Exemplo**: Você tem a "Bolsa Preta" e quer criar a "Bolsa Vermelha" igual
+
+✅ **Criar variações de cor** do mesmo modelo  
+**Exemplo**: Lançar preto, branco, azul e vermelho do mesmo design
+
+✅ **Fazer versões diferentes** de um produto  
+**Exemplo**: Bolsa pequena, média e grande com as mesmas gravações
+
+✅ **Testar configurações novas** sem mexer na original  
+**Exemplo**: Criar uma "Bolsa Teste" para experimentar
+
+### Quando NÃO usar
+
+❌ **Não use Criar** se você quer modificar produtos que já existem  
+→ Use o modo Atualizar para isso
+
+❌ **Não use Criar** para fazer 20 bolsas de uma vez  
+→ No modo Criar você faz uma por vez. Para múltiplas, crie manualmente ou use scripts
+
+## Modo Atualizar
+
+### Quando usar
+
+Use o modo "Atualizar produtos existentes" quando você quer:
+
+✅ **Mudar gravações em várias bolsas** de uma vez  
+**Exemplo**: Você mudou as opções de texto na base e quer aplicar em 15 bolsas
+
+✅ **Ajustar posições** em múltiplas bolsas simultaneamente  
+**Exemplo**: Mover o nome 2cm para baixo em todas as bolsas da linha verão
+
+✅ **Corrigir erro em lote**  
+**Exemplo**: Descobriu que um símbolo está mal posicionado em 30 bolsas
+
+✅ **Sincronizar com modelo base** atualizado  
+**Exemplo**: Você adicionou um campo novo na base e quer copiar para as outras
+
+### Quando NÃO usar
+
+❌ **Não use Atualizar** para criar bolsas novas  
+→ Use o modo Criar
+
+❌ **Não use Atualizar** sem testar antes  
+→ Sempre teste em 1-2 produtos primeiro
+
+❌ **Não use Atualizar** se você não tem os IDs das bolsas  
+→ Você precisa saber os números dos produtos
+
+## Comparação rápida
+
+| Aspecto | Modo Criar | Modo Atualizar |
+|---------|-----------|----------------|
+| **O que faz** | Cria produto novo | Modifica produtos existentes |
+| **Quantidade** | Um por vez | Vários de uma vez |
+| **Precisa de** | Nome e imagem novos | IDs dos produtos alvo |
+| **Altera originais** | Não | Sim |
+| **Backup automático** | Não (é novo) | Sim (salva antes) |
+| **Risco** | Baixo | Médio (teste antes!) |
+
+## Cenários reais
+
+### Cenário 1: Lançamento de nova coleção
+
+**Situação**: Você vai lançar 5 novas cores da mesma bolsa.
+
+**O que fazer**:
+1. Configure a primeira bolsa como você quer (a "base perfeita")
+2. Use **Modo Criar** 4 vezes para criar as outras 4 cores
+3. Troque a imagem de cada uma
+
+**Por quê**: São produtos novos, então você cria.
+
+### Cenário 2: Mudou o design das gravações
+
+**Situação**: Você decidiu mudar a posição e cor das gravações. Tem 20 bolsas já vendendo.
+
+**O que fazer**:
+1. Ajuste a bolsa base com o novo design
+2. Crie 1 bolsa teste usando **Modo Criar** para conferir
+3. Se ficou bom, use **Modo Atualizar** nas 20 bolsas de uma vez
+
+**Por quê**: São produtos existentes, então você atualiza.
+
+### Cenário 3: Erro em várias bolsas
+
+**Situação**: Você descobriu que o campo "CPF" está 3mm fora da posição em 10 bolsas.
+
+**O que fazer**:
+1. Corrija na bolsa base
+2. Use **Modo Atualizar** nas 10 bolsas
+3. Confira em 1 ou 2 se ficou certo
+
+**Por quê**: São produtos que já existem e têm erro, então você atualiza.
+
+### Cenário 4: Novo produto similar
+
+**Situação**: Você tem "Mochila Escolar" e quer criar "Mochila Executiva" com as mesmas opções de gravação.
+
+**O que fazer**:
+1. Use **Modo Criar** tendo a "Mochila Escolar" como base
+2. Dê o nome "Mochila Executiva"
+3. Escolha a imagem da mochila executiva
+4. Crie
+
+**Por quê**: É um produto novo (ainda que similar), então você cria.
+
+### Cenário 5: Adicionar campo em todos os produtos
+
+**Situação**: Você adicionou um campo novo "Dedicatória" na bolsa base e quer ter em todas as 50 bolsas.
+
+**O que fazer**:
+1. Configure o campo "Dedicatória" na bolsa base
+2. Use **Modo Atualizar** em lotes de 10 bolsas
+3. Marque só a opção do novo campo
+4. Aplique 5 vezes (50 bolsas ÷ 10 por lote)
+
+**Por quê**: São produtos existentes que você quer modificar.
+
+## Regra de ouro
+
+:::tip[Lembre-se]
+- **Produto não existe? → Criar**
+- **Produto já existe? → Atualizar**
+
+Simples assim! 😊
+:::
+
+## E se eu usar errado?
+
+**Não tem problema!** 
+
+- Se você criou quando devia atualizar: Delete o produto criado e use o modo certo
+- Se você atualizou quando devia criar: Use o backup para restaurar (processo técnico) ou ajuste manualmente
+
+Por isso sempre recomendamos: **teste primeiro em 1 ou 2 produtos!**
+
+## Próximos passos
+
+Agora que você sabe quando usar cada modo:
+
+- [Aprenda a criar sua primeira bolsa](/tutoriais/criar-primeira-bolsa/)
+- [Veja como atualizar várias bolsas](/tutoriais/atualizar-varias/)
+- [Entenda como ajustar posições](/tutoriais/mudar-posicoes/)
