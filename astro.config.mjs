@@ -45,36 +45,34 @@ export default defineConfig({
 			],
 			sidebar: [
 				{
-					label: 'Início',
+					label: 'Começando',
 					items: [
-						{ label: 'Visão Geral', slug: 'index' },
-						{ label: 'Instalação', slug: 'inicio/instalacao' },
-						{ label: 'Início Rápido', slug: 'inicio/inicio-rapido' },
+						{ label: 'O que o plugin faz?', slug: 'comecando/o-que-faz' },
+						{ label: 'Requisitos', slug: 'comecando/requisitos' },
+						{ label: 'Primeiro acesso', slug: 'comecando/primeiro-acesso' },
 					],
 				},
 				{
-					label: 'Guias',
-					autogenerate: { directory: 'guias' },
+					label: 'Tutoriais',
+					items: [
+						{ label: 'Criar sua primeira bolsa', slug: 'tutoriais/criar-primeira-bolsa' },
+						{ label: 'Atualizar várias bolsas', slug: 'tutoriais/atualizar-varias' },
+						{ label: 'Ajustar posições', slug: 'tutoriais/mudar-posicoes' },
+						{ label: 'Visualizar antes de aplicar', slug: 'tutoriais/usar-preview' },
+					],
 				},
 				{
-					label: 'Funcionalidades',
-					autogenerate: { directory: 'funcionalidades' },
+					label: 'Dicas',
+					items: [
+						{ label: 'Quando usar cada modo', slug: 'dicas/quando-usar-cada-modo' },
+					],
 				},
 				{
-					label: 'Referência',
-					autogenerate: { directory: 'referencia' },
-				},
-				{
-					label: 'Arquitetura',
-					autogenerate: { directory: 'arquitetura' },
-				},
-				{
-					label: 'Desenvolvimento',
-					autogenerate: { directory: 'desenvolvimento' },
-				},
-				{
-					label: 'Solução de Problemas',
-					autogenerate: { directory: 'solucao-problemas' },
+					label: 'Ajuda',
+					items: [
+						{ label: 'Problemas comuns', slug: 'ajuda/problemas-comuns' },
+						{ label: 'Perguntas frequentes', slug: 'ajuda/perguntas-frequentes' },
+					],
 				},
 			],
 			// customCss: ['./src/styles/custom.css'],
